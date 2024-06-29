@@ -1,0 +1,16 @@
+bus:
+  - can0
+loop_frequency: 800
+cycle_time_error_threshold: 1
+thread_priority: 30
+
+actuators:
+  motor1:
+    bus: can0
+    id: 0x201
+    type: rm_3508
+
+  motor2:
+    bus: can0
+    id: 0x202
+    type: rm_3508

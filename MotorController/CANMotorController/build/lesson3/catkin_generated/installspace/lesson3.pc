@@ -1,0 +1,8 @@
+prefix=/home/h/yjy/CANMotorController/install
+
+Name: lesson3
+Description: Description of lesson3
+Version: 0.0.0
+Cflags: 
+Libs: -L${prefix}/lib 
+Requires: 

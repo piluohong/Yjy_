@@ -1,0 +1,66 @@
+Panels:
+  - Class: rviz/Displays
+    Name: Displays
+    Properties:
+      Displays:
+        - Alpha: 0.5
+          Class: rviz/Grid
+          Color: 160; 160; 160
+          Enabled: true
+          Line Style: Lines
+          Name: Grid
+          Plane Cell Count: 10
+          Plane Cell Size: 1
+        - Alpha: 1
+          Class: rviz/RobotModel
+          Description: ''
+          Enabled: true
+          Fixed Frame: odom
+          Links:
+            Default:
+              Alpha: 1
+              Hide Description: false
+              Name: base_link
+              Visual:
+                Alpha: 1
+                Hide Description: false
+          Name: RobotModel
+      Enabled: true
+    Splittable: true
+    Window: true
+  - Class: rviz/Time
+    Name: Time
+    Properties:
+      Enabled: true
+    Splittable: true
+    Window: true
+  - Class: rviz/ToolProperties
+    Expanded: false
+    Name: Tools
+    Properties:
+      Current Tool: rviz/Interact
+      Tools:
+        - Class: rviz/Interact
+          Hide Inactive Objects: true
+          Name: Interact
+        - Class: rviz/MoveCamera
+          Name: Move Camera
+        - Class: rviz/Select
+          Name: Select
+        - Class: rviz/Measure
+          Name: Measure
+      Enabled: true
+    Splittable: true
+    Window: true
+  - Class: rviz/Views
+    Expanded: false
+    Name: Views
+    Properties:
+      Current View: rviz/TopDownOrtho
+      Views:
+        - Class: rviz/TopDownOrtho
+          Enabled: true
+          Name: TopDownOrtho
+      Enabled: true
+    Splittable: true
+    Window: true

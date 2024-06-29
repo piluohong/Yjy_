@@ -1,0 +1,35 @@
+{
+  "configurations": [
+    {
+      "browse": {
+        "databaseFilename": "${default}",
+        "limitSymbolsToIncludedHeaders": false
+      },
+      "includePath": [
+        "/home/cherrynova/catkin_ws/devel/include/**",
+        "/opt/ros/noetic/include/**",
+        "/home/cherrynova/catkin_ws/src/sp_control/sp_control/calibration_controller/include/**",
+        "/home/cherrynova/catkin_ws/src/sp_control/sp_control/chassis_controller/include/**",
+        "/home/cherrynova/catkin_ws/src/sp_control/sp_control/gimbal_controller/include/**",
+        "/home/cherrynova/catkin_ws/src/sp_control/sp_control/gpio_controller/include/**",
+        "/home/cherrynova/catkin_ws/src/sp_control/sp_control/keyboard_control/include/**",
+        "/home/cherrynova/catkin_ws/src/ros_demo/lesson2/include/**",
+        "/home/cherrynova/catkin_ws/src/ros_demo/lesson3/include/**",
+        "/home/cherrynova/catkin_ws/src/sp_control/sp_control/manipulator_control/include/**",
+        "/home/cherrynova/catkin_ws/src/sp_control/sp_control/shooter_controller/include/**",
+        "/home/cherrynova/catkin_ws/src/sp_control/sp_common/include/**",
+        "/home/cherrynova/catkin_ws/src/sp_control/sp_control/sp_dbus/include/**",
+        "/home/cherrynova/catkin_ws/src/sp_control/sp_operator/sp_engineer/include/**",
+        "/home/cherrynova/catkin_ws/src/sp_control/sp_hw/include/**",
+        "/home/cherrynova/catkin_ws/src/urdf_demo/include/**",
+        "/usr/include/**"
+      ],
+      "name": "ROS",
+      "intelliSenseMode": "gcc-x64",
+      "compilerPath": "/usr/bin/gcc",
+      "cStandard": "gnu11",
+      "cppStandard": "c++14"
+    }
+  ],
+  "version": 4
+}

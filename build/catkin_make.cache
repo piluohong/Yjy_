@@ -1,0 +1,2 @@
+chassis_ctrl:teleop_rviz_plugin
+-DCATKIN_DEVEL_PREFIX=/home/h/yjy/devel -DCMAKE_INSTALL_PREFIX=/home/h/yjy/install -G Unix Makefiles

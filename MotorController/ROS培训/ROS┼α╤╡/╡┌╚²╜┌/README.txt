@@ -1,0 +1,2 @@
+can_bus_act_data.cpp与can_bus尚余bug，先开启程序再给电机通电会导致进程中断，
+需要先给电机通电再开启程序

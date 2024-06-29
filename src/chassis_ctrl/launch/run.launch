@@ -1,0 +1,11 @@
+<launch>
+    <node pkg="chassis_ctrl" type="joy" name="joy" output="screen" respawn="true"/>
+    <node pkg="chassis_ctrl" type="gui.py" name="gui" output="screen" respawn="true"/>
+    <node pkg="chassis_ctrl" type="chassis_visual.py" name="chassis_visual" output="screen" respawn="true"/>
+    <node pkg="chassis_ctrl" type="motor.py" name="motor" output="screen" respawn="false"/>
+    <param name="robot_description" command="cat $(find chassis_ctrl)/URDF/model.urdf" />
+    <node name="robot_state_publisher" pkg="robot_state_publisher" type="robot_state_publisher" />
+    <!-- <node pkg="chassis_ctrl" type="chassis_ctrl.py" name="chassis_ctrl" output="screen" respawn="true"/> -->
+    <node type="rviz" name="joy_rviz" pkg="rviz" args="-d $(find chassis_ctrl)/rviz/sijuyanjiuyuan.rviz" respawn="true"/>
+    <!-- <node type="rviz" name="chassis_rviz" pkg="rviz" args="-d $(find chassis_ctrl)/rviz/chassis_visual.rviz" respawn="true"/> -->
+</launch>

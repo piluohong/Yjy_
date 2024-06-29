@@ -1,0 +1,3 @@
+<launch>
+    <rosparam file="$(find lesson3)/config/actuator_coefficient.yaml" command="load"/>
+</launch>
