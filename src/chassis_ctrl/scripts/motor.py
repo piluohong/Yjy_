@@ -1,4 +1,8 @@
-#!/usr/bin/python3
+#!/usr/bin/env python3
+import rospy
+from std_msgs.msg import Float32
+from chassis_ctrl.msg import cordinateArray
+
 import serial
 import time
 import math
@@ -6,8 +10,9 @@ import struct
 import sys
 import signal
 
-import rospy
-from std_msgs.msg import Float32
+GREEN = "\033[92m"
+RESET = "\033[0m"
+
 
 def initialize_serial_port(port, baudrate):
     ser = serial.Serial(port, baudrate, timeout=1)
@@ -15,7 +20,7 @@ def initialize_serial_port(port, baudrate):
 
 def send_command(ser, command):
     ser.write(bytes.fromhex(command))
-    print(f"Command sent: {command}")
+    # print(f"Command sent: {command}")
 
 def float_to_hex(f):
     packed = struct.pack('!f', f)
@@ -26,9 +31,11 @@ def float_to_hex(f):
     return spaced_hex_str
 
 def receive_response(ser):
-    response = ser.read(12)
+    response = ser.read(17)
     if response:
-        print(f"Response received: {response.hex()}")
+        hex_str = response.hex()
+        spaced_hex_str = ' '.join([hex_str[i:i+2] for i in range(0, len(hex_str), 2)])
+        print(f"Response received: {spaced_hex_str}")
     else:
         print("No response received.")
     return response
@@ -47,24 +54,38 @@ def signal_handler(sig, frame):
     ser.close()
     sys.exit(0)
 
+def receive_loc(ser):
+    read_loc_to_send = '41 54 88 07 eb fc 08 19 70 00 00 00 00 00 00 0d 0a'
+    send_command(ser,read_loc_to_send)
+    response = receive_response(ser)
+    return response
+
 def get_theta(msg):
     global ser
-    set_angular = msg.data
+    
+    set_angular = msg.cor(1,3)
     hex_angle = receive_angular(float(set_angular))
     
-    run_to_send = "41 54 18 07 eb fc 08 00 00 00 00 00 00 00 00 0d 0a"
+    
+    #位置模式控制
     loc_ref_to_send = f"41 54 90 07 eb fc 08 16 70 00 00 {hex_angle} 0d 0a"
     limit_spd_to_send = "41 54 90 07 eb fc 08 17 70 00 00 00 00 00 40 0d 0a"
     # set_spd_to_send = "41 54 90 07 eb fc 08 0a 70 00 00 00 00 80 3f 0d 0a"
     
     
     
-    send_command(ser, run_to_send)
+   
     send_command(ser, limit_spd_to_send)
     send_command(ser, loc_ref_to_send)
     
+    #mechPos
+    # receive_loc(ser)
+    
+    # 设置当前位置为机械零位
     set_zero_loc = "41 54 30 07 eb fc 08 01 00 00 00 00 00 00 00 0d 0a"
     send_command(ser, set_zero_loc)
+    receive_response(ser)
+    
     time.sleep(1)
 
 if __name__ == "__main__":
@@ -76,12 +97,18 @@ if __name__ == "__main__":
 
     loc_mode_to_send = "41 54 90 07 eb fc 08 05 70 00 00 01 00 00 00 0d 0a"
     send_command(ser, loc_mode_to_send)
+    run_to_send = "41 54 18 07 eb fc 08 00 00 00 00 00 00 00 00 0d 0a" #使能
+    send_command(ser, run_to_send)
+    receive_response(ser)
     
     set_cur_kp = "41 54 90 07 eb fc 08 10 70 00 00 00 00 80 3f 0d 0a"
     send_command(ser, set_cur_kp)
 
     rospy.init_node('motor', anonymous=True)
-    rospy.Subscriber('/theta_z', Float32, get_theta)
+    rospy.loginfo(GREEN + "----> cybergear_node Started." + RESET)
+    rospy.Subscriber('/cybergear_node/theta_z', Float32, get_theta)
+    
+    
 
     signal.signal(signal.SIGINT, signal_handler)
     print('Press Ctrl-C to exit.')

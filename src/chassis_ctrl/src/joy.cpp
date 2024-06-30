@@ -11,6 +11,7 @@
 #include <sensor_msgs/Joy.h>
 #include <std_msgs/Float32.h>
 #include <time.h>
+#include "chassis_ctrl/cordinateArray.h"
 
 
 
@@ -45,10 +46,10 @@ TeleopTurtle::TeleopTurtle()
     nh.param<int>("axis_linear", axis_linear, 4);
     nh.param<int>("axis_angular", axis_angular, 3);
 
-    pub = nh.advertise<geometry_msgs::Twist>("/cmd_vel", 10);
-    time_duration_pub = nh.advertise<std_msgs::Float32>("/time_duration_gui",1);
-    linear_x_pub = nh.advertise<std_msgs::Float32>("/linear_x",1);
-    angular_z_pub = nh.advertise<std_msgs::Float32>("/angular_z",1);
+    pub = nh.advertise<geometry_msgs::Twist>("/joy/cmd_vel", 10);
+    time_duration_pub = nh.advertise<std_msgs::Float32>("/joy/time_duration_gui",1);
+    linear_x_pub = nh.advertise<std_msgs::Float32>("/joy/linear_x",1);
+    angular_z_pub = nh.advertise<std_msgs::Float32>("/joy/angular_z",1);
     sub = nh.subscribe<sensor_msgs::Joy>("joy", 10, &TeleopTurtle::callback, this);
     
 }
@@ -76,12 +77,9 @@ int main(int argc, char **argv)
 {
     // 设置编码
     setlocale(LC_ALL, "");
-    ROS_INFO("Start joy ctrl node !");
+    
     ros::init(argc, argv, "teleop_turtle");
-    // 初始化ROS节点
-    // ros::NodeHandle nh;
-    
-    
+    ROS_INFO("\033[1;32m----> Control Joy Started.\033[0m");
     
     TeleopTurtle teleopTurtle;
     

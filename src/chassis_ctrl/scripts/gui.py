@@ -1,4 +1,4 @@
-#!/usr/bin/python3
+#!/usr/bin/env python3
 # 监控速度和角速度的窗口 time_duration 间隔 1s
 import numpy as np
 import matplotlib.pyplot as plt

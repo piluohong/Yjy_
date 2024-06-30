@@ -12,7 +12,7 @@ class VehicleModel:
         rospy.init_node('vehicle_model', anonymous=True)
         self.pose_pub = rospy.Publisher('/vehicle/pose', Pose, queue_size=10)
         self.odom_pub = rospy.Publisher('/vehicle/odom', Odometry, queue_size=10)
-        rospy.Subscriber('/cmd_vel', Twist, self.cmd_vel_callback)
+        rospy.Subscriber('/joy/cmd_vel', Twist, self.cmd_vel_callback)
         self.odom_broadcaster = tf.TransformBroadcaster()
         self.rate = rospy.Rate(10)  # 10 Hz
 
