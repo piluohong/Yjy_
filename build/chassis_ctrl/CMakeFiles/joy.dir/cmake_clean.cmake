@@ -1,6 +1,6 @@
 file(REMOVE_RECURSE
-  "/home/h/yjy/devel/lib/chassis_ctrl/joy"
-  "/home/h/yjy/devel/lib/chassis_ctrl/joy.pdb"
+  "/home/abc/Yjy_/devel/lib/chassis_ctrl/joy"
+  "/home/abc/Yjy_/devel/lib/chassis_ctrl/joy.pdb"
   "CMakeFiles/joy.dir/src/joy.cpp.o"
 )
 

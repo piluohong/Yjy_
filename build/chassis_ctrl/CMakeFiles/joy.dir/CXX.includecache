@@ -6,7 +6,23 @@
 
 #IncludeRegexTransform: 
 
-/home/h/yjy/src/chassis_ctrl/src/joy.cpp
+/home/abc/Yjy_/devel/include/chassis_ctrl/motion.h
+string
+-
+vector
+-
+memory
+-
+ros/types.h
+-
+ros/serialization.h
+-
+ros/builtin_message_traits.h
+-
+ros/message_operations.h
+-
+
+/home/abc/Yjy_/src/chassis_ctrl/src/joy.cpp
 ros/ros.h
 -
 geometry_msgs/Twist.h
@@ -17,6 +33,8 @@ std_msgs/Float32.h
 -
 time.h
 -
+chassis_ctrl/motion.h
+/home/abc/Yjy_/src/chassis_ctrl/src/chassis_ctrl/motion.h
 
 /opt/ros/noetic/include/geometry_msgs/Twist.h
 string

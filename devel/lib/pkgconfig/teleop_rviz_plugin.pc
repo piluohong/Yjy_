@@ -1,4 +1,4 @@
-prefix=/home/h/yjy/devel
+prefix=/home/abc/Yjy_/devel
 
 Name: teleop_rviz_plugin
 Description: Description of teleop_rviz_plugin

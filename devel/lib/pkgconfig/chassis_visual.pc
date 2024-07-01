@@ -1,8 +1,0 @@
-prefix=/home/h/yjy/devel
-
-Name: chassis_visual
-Description: Description of chassis_visual
-Version: 0.0.0
-Cflags: 
-Libs: -L${prefix}/lib 
-Requires: 

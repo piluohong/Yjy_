@@ -67,14 +67,14 @@ set(teleop_rviz_plugin_CONFIG_INCLUDED TRUE)
 
 # set variables for source/devel/install prefixes
 if("FALSE" STREQUAL "TRUE")
-  set(teleop_rviz_plugin_SOURCE_PREFIX /home/h/yjy/src/teleop_rviz_plugin)
-  set(teleop_rviz_plugin_DEVEL_PREFIX /home/h/yjy/devel)
+  set(teleop_rviz_plugin_SOURCE_PREFIX /home/abc/Yjy_/src/teleop_rviz_plugin)
+  set(teleop_rviz_plugin_DEVEL_PREFIX /home/abc/Yjy_/devel)
   set(teleop_rviz_plugin_INSTALL_PREFIX "")
   set(teleop_rviz_plugin_PREFIX ${teleop_rviz_plugin_DEVEL_PREFIX})
 else()
   set(teleop_rviz_plugin_SOURCE_PREFIX "")
   set(teleop_rviz_plugin_DEVEL_PREFIX "")
-  set(teleop_rviz_plugin_INSTALL_PREFIX /home/h/yjy/install)
+  set(teleop_rviz_plugin_INSTALL_PREFIX /home/abc/Yjy_/install)
   set(teleop_rviz_plugin_PREFIX ${teleop_rviz_plugin_INSTALL_PREFIX})
 endif()
 
@@ -154,7 +154,7 @@ foreach(library ${libraries})
     set(lib_path "")
     set(lib "${library}-NOTFOUND")
     # since the path where the library is found is returned we have to iterate over the paths manually
-    foreach(path /home/h/yjy/install/lib;/home/h/yjy/devel/lib;/home/h/livox_driver2_ws/devel/lib;/opt/ros/noetic/lib)
+    foreach(path /home/abc/Yjy_/install/lib;/home/abc/Yjy_/devel/lib;/opt/ros/noetic/lib)
       find_library(lib ${library}
         PATHS ${path}
         NO_DEFAULT_PATH NO_CMAKE_FIND_ROOT_PATH)

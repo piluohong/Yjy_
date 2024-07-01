@@ -43,10 +43,10 @@ RM = /usr/bin/cmake -E remove -f
 EQUALS = =
 
 # The top-level source directory on which CMake was run.
-CMAKE_SOURCE_DIR = /home/h/yjy/src
+CMAKE_SOURCE_DIR = /home/abc/Yjy_/src
 
 # The top-level build directory on which CMake was run.
-CMAKE_BINARY_DIR = /home/h/yjy/build
+CMAKE_BINARY_DIR = /home/abc/Yjy_/build
 
 # Utility rule file for tests.
 
@@ -67,6 +67,6 @@ CMakeFiles/tests.dir/clean:
 .PHONY : CMakeFiles/tests.dir/clean
 
 CMakeFiles/tests.dir/depend:
-	cd /home/h/yjy/build && $(CMAKE_COMMAND) -E cmake_depends "Unix Makefiles" /home/h/yjy/src /home/h/yjy/src /home/h/yjy/build /home/h/yjy/build /home/h/yjy/build/CMakeFiles/tests.dir/DependInfo.cmake --color=$(COLOR)
+	cd /home/abc/Yjy_/build && $(CMAKE_COMMAND) -E cmake_depends "Unix Makefiles" /home/abc/Yjy_/src /home/abc/Yjy_/src /home/abc/Yjy_/build /home/abc/Yjy_/build /home/abc/Yjy_/build/CMakeFiles/tests.dir/DependInfo.cmake --color=$(COLOR)
 .PHONY : CMakeFiles/tests.dir/depend
 

@@ -1,7 +1,8 @@
 #!/usr/bin/env python3
 import rospy
 from std_msgs.msg import Float32
-from chassis_ctrl.msg import cordinateArray
+
+# from chassis_ctrl.msg import motion
 
 import serial
 import time
@@ -63,7 +64,7 @@ def receive_loc(ser):
 def get_theta(msg):
     global ser
     
-    set_angular = msg.cor(1,3)
+    set_angular = msg.data
     hex_angle = receive_angular(float(set_angular))
     
     
@@ -89,7 +90,7 @@ def get_theta(msg):
     time.sleep(1)
 
 if __name__ == "__main__":
-    serial_port = '/dev/ttyUSB0'
+    serial_port = '/dev/ttyUSB1'
     baud_rate = 921600
 
     ser = initialize_serial_port(serial_port, baud_rate)

@@ -7,4 +7,4 @@
 # new environment variables
 
 # modified environment variables
-export PWD='/home/h/yjy/build'
+export PWD='/home/abc/Yjy_/build'

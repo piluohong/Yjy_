@@ -11,7 +11,7 @@
 #include <sensor_msgs/Joy.h>
 #include <std_msgs/Float32.h>
 #include <time.h>
-#include "chassis_ctrl/cordinateArray.h"
+#include "chassis_ctrl/motion.h"
 
 
 
@@ -36,7 +36,9 @@ private:
     ros::Publisher linear_x_pub;
     ros::Publisher angular_z_pub;
     ros::Publisher time_duration_pub;
-    
+
+    // 线性模组debug
+    // ros::Publisher xyz_pub;
 
 };
 
@@ -46,11 +48,18 @@ TeleopTurtle::TeleopTurtle()
     nh.param<int>("axis_linear", axis_linear, 4);
     nh.param<int>("axis_angular", axis_angular, 3);
 
+    sub = nh.subscribe<sensor_msgs::Joy>("joy", 10, &TeleopTurtle::callback, this);
+
     pub = nh.advertise<geometry_msgs::Twist>("/joy/cmd_vel", 10);
     time_duration_pub = nh.advertise<std_msgs::Float32>("/joy/time_duration_gui",1);
     linear_x_pub = nh.advertise<std_msgs::Float32>("/joy/linear_x",1);
     angular_z_pub = nh.advertise<std_msgs::Float32>("/joy/angular_z",1);
-    sub = nh.subscribe<sensor_msgs::Joy>("joy", 10, &TeleopTurtle::callback, this);
+
+    // 线性模组debug
+    // xyz_pub = nh.advertise<chassis_ctrl::motion>("/xyz_node/xyz_action", 1);
+
+    
+    
     
 }
 
@@ -70,12 +79,28 @@ void TeleopTurtle::callback(const sensor_msgs::Joy::ConstPtr &joy)
     angular_z_pub.publish(angular_z);
     time_duration_pub.publish(time_duration);
     cnt+=1;
+
+    //  Create a message
+    chassis_ctrl::motion msg;
+
+    // Initialize the data array
+    int rows = 4; // Update with your actual row size
+    int cols = 1; // Update with your actual column size
+    msg.data.resize(rows * cols);
+
+    // Fill the data array
+    // msg.data[0] = msg.data[1] = msg.data[2] = 0;
+    // msg.data[3] = 90;
+    // msg.dir_x = msg.dir_y = msg.dir_z = 1;
+
+    // printf("%f,%f,%f: ",msg.data[0],msg.data[1],msg.data[2]);
+    // Publish the message
+    // xyz_pub.publish(msg);
     
 }
 
 int main(int argc, char **argv)
 {
-    // 设置编码
     setlocale(LC_ALL, "");
     
     ros::init(argc, argv, "teleop_turtle");
@@ -95,7 +120,8 @@ int main(int argc, char **argv)
     //     time_duration.data += 1;
     //     rate.sleep();
     // }
-    ros::spin();
+    ros::MultiThreadedSpinner spinner(3);
+    spinner.spin();
     return 0;
 }
 

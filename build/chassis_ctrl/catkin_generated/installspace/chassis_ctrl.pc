@@ -1,8 +1,8 @@
-prefix=/home/h/yjy/install
+prefix=/home/abc/Yjy_/install
 
 Name: chassis_ctrl
 Description: Description of chassis_ctrl
 Version: 0.0.0
-Cflags: 
+Cflags: -I${prefix}/include
 Libs: -L${prefix}/lib 
-Requires: 
+Requires: roscpp rospy std_msgs message_runtime
