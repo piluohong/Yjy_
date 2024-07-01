@@ -68,14 +68,11 @@ def get_theta(msg):
     hex_angle = receive_angular(float(set_angular))
     
     
-    #位置模式控制
-    loc_ref_to_send = f"41 54 90 07 eb fc 08 16 70 00 00 {hex_angle} 0d 0a"
-    limit_spd_to_send = "41 54 90 07 eb fc 08 17 70 00 00 00 00 00 40 0d 0a"
+    # 进入位置模式 控制
+    loc_ref_to_send = f"41 54 90 07 eb fc 08 16 70 00 00 {hex_angle} 0d 0a" # 相对于零位的位置
+    limit_spd_to_send = "41 54 90 07 eb fc 08 17 70 00 00 00 00 00 40 0d 0a" # 速度限制
     # set_spd_to_send = "41 54 90 07 eb fc 08 0a 70 00 00 00 00 80 3f 0d 0a"
-    
-    
-    
-   
+    # 执行
     send_command(ser, limit_spd_to_send)
     send_command(ser, loc_ref_to_send)
     
@@ -87,6 +84,7 @@ def get_theta(msg):
     send_command(ser, set_zero_loc)
     receive_response(ser)
     
+    # 等待电机响应完成
     time.sleep(1)
 
 if __name__ == "__main__":
@@ -98,7 +96,7 @@ if __name__ == "__main__":
 
     loc_mode_to_send = "41 54 90 07 eb fc 08 05 70 00 00 01 00 00 00 0d 0a"
     send_command(ser, loc_mode_to_send)
-    run_to_send = "41 54 18 07 eb fc 08 00 00 00 00 00 00 00 00 0d 0a" #使能
+    run_to_send = "41 54 18 07 eb fc 08 00 00 00 00 00 00 00 00 0d 0a" # 电机使能
     send_command(ser, run_to_send)
     receive_response(ser)
     

@@ -13,8 +13,8 @@ class motion(genpy.Message):
   _has_header = False  # flag to mark the presence of a Header object
   _full_text = """# 坐标(x,y,z,theta_z)，4行1列
 float32[] data
-int32 rows=4
-int32 cols=1
+int32 rows = 4
+int32 cols = 1
 
 # xyz动作执行量
 float32 dist_x # unit: mm

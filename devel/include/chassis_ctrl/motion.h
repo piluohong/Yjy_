@@ -230,8 +230,8 @@ struct Definition< ::chassis_ctrl::motion_<ContainerAllocator> >
   {
     return "# 坐标(x,y,z,theta_z)，4行1列\n"
 "float32[] data\n"
-"int32 rows=4\n"
-"int32 cols=1\n"
+"int32 rows = 4\n"
+"int32 cols = 1\n"
 "\n"
 "# xyz动作执行量\n"
 "float32 dist_x # unit: mm\n"

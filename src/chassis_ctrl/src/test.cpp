@@ -9,12 +9,10 @@ void debug_message_pub(const std_msgs::Float32 &debug_mes)
 {
      // Create a message
     chassis_ctrl::motion msg;
-
     // Initialize the data array
     int rows = 4; // Update with your actual row size
     int cols = 1; // Update with your actual column size
     msg.data.resize(rows * cols);
-
     // Fill the data array
     msg.data[0] = 0 ;  msg.data[1] = 30; msg.data[2] = 0;
     msg.data[3] = 90;
