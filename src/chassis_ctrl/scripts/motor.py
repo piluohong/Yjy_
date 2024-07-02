@@ -2,7 +2,7 @@
 import rospy
 from std_msgs.msg import Float32
 
-# from chassis_ctrl.msg import motion
+from chassis_ctrl.msg import motion
 
 import serial
 import time
@@ -63,8 +63,9 @@ def receive_loc(ser):
 
 def get_theta(msg):
     global ser
+    global cybergear_pub
     
-    set_angular = msg.data
+    set_angular = msg.data[3]
     hex_angle = receive_angular(float(set_angular))
     
     
@@ -82,13 +83,18 @@ def get_theta(msg):
     # 设置当前位置为机械零位
     set_zero_loc = "41 54 30 07 eb fc 08 01 00 00 00 00 00 00 00 0d 0a"
     send_command(ser, set_zero_loc)
-    receive_response(ser)
+    # receive_response(ser)
     
     # 等待电机响应完成
     time.sleep(1)
+    
+    # 设置电机完成信号
+    # t = Float32()
+    # t.data = 1
+    # cybergear_pub.publish(t)
 
 if __name__ == "__main__":
-    serial_port = '/dev/ttyUSB1'
+    serial_port = '/dev/ttyUSB0'
     baud_rate = 921600
 
     ser = initialize_serial_port(serial_port, baud_rate)
@@ -105,8 +111,10 @@ if __name__ == "__main__":
 
     rospy.init_node('motor', anonymous=True)
     rospy.loginfo(GREEN + "----> cybergear_node Started." + RESET)
-    rospy.Subscriber('/cybergear_node/theta_z', Float32, get_theta)
     
+    # cybergear_pub = rospy.Publisher('/debug_mes', Float32, queue_size=10)
+    rospy.Subscriber('/xyz_node/xyz_action', motion, get_theta)
+   
     
 
     signal.signal(signal.SIGINT, signal_handler)

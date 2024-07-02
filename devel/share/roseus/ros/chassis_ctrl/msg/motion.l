@@ -27,15 +27,15 @@
 
 (defclass chassis_ctrl::motion
   :super ros::object
-  :slots (_data _dist_x _dist_y _dist_z _dir_x _dir_y _dir_z _b_x _b_y _b_z _b_cybergear _action_f ))
+  :slots (_data _t_x _t_y _t_z _dir_x _dir_y _dir_z _b_x _b_y _b_z _b_cybergear _action_f ))
 
 (defmethod chassis_ctrl::motion
   (:init
    (&key
     ((:data __data) (make-array 0 :initial-element 0.0 :element-type :float))
-    ((:dist_x __dist_x) 0.0)
-    ((:dist_y __dist_y) 0.0)
-    ((:dist_z __dist_z) 0.0)
+    ((:t_x __t_x) 0.0)
+    ((:t_y __t_y) 0.0)
+    ((:t_z __t_z) 0.0)
     ((:dir_x __dir_x) 0)
     ((:dir_y __dir_y) 0)
     ((:dir_z __dir_z) 0)
@@ -47,9 +47,9 @@
     )
    (send-super :init)
    (setq _data __data)
-   (setq _dist_x (float __dist_x))
-   (setq _dist_y (float __dist_y))
-   (setq _dist_z (float __dist_z))
+   (setq _t_x (float __t_x))
+   (setq _t_y (float __t_y))
+   (setq _t_z (float __t_z))
    (setq _dir_x (round __dir_x))
    (setq _dir_y (round __dir_y))
    (setq _dir_z (round __dir_z))
@@ -62,15 +62,15 @@
   (:data
    (&optional __data)
    (if __data (setq _data __data)) _data)
-  (:dist_x
-   (&optional __dist_x)
-   (if __dist_x (setq _dist_x __dist_x)) _dist_x)
-  (:dist_y
-   (&optional __dist_y)
-   (if __dist_y (setq _dist_y __dist_y)) _dist_y)
-  (:dist_z
-   (&optional __dist_z)
-   (if __dist_z (setq _dist_z __dist_z)) _dist_z)
+  (:t_x
+   (&optional __t_x)
+   (if __t_x (setq _t_x __t_x)) _t_x)
+  (:t_y
+   (&optional __t_y)
+   (if __t_y (setq _t_y __t_y)) _t_y)
+  (:t_z
+   (&optional __t_z)
+   (if __t_z (setq _t_z __t_z)) _t_z)
   (:dir_x
    (&optional __dir_x)
    (if __dir_x (setq _dir_x __dir_x)) _dir_x)
@@ -100,11 +100,11 @@
    (+
     ;; float32[] _data
     (* 4    (length _data)) 4
-    ;; float32 _dist_x
+    ;; float32 _t_x
     4
-    ;; float32 _dist_y
+    ;; float32 _t_y
     4
-    ;; float32 _dist_z
+    ;; float32 _t_z
     4
     ;; int32 _dir_x
     4
@@ -132,12 +132,12 @@
      (dotimes (i (length _data))
        (sys::poke (elt _data i) (send s :buffer) (send s :count) :float) (incf (stream-count s) 4)
        )
-     ;; float32 _dist_x
-       (sys::poke _dist_x (send s :buffer) (send s :count) :float) (incf (stream-count s) 4)
-     ;; float32 _dist_y
-       (sys::poke _dist_y (send s :buffer) (send s :count) :float) (incf (stream-count s) 4)
-     ;; float32 _dist_z
-       (sys::poke _dist_z (send s :buffer) (send s :count) :float) (incf (stream-count s) 4)
+     ;; float32 _t_x
+       (sys::poke _t_x (send s :buffer) (send s :count) :float) (incf (stream-count s) 4)
+     ;; float32 _t_y
+       (sys::poke _t_y (send s :buffer) (send s :count) :float) (incf (stream-count s) 4)
+     ;; float32 _t_z
+       (sys::poke _t_z (send s :buffer) (send s :count) :float) (incf (stream-count s) 4)
      ;; int32 _dir_x
        (write-long _dir_x s)
      ;; int32 _dir_y
@@ -165,12 +165,12 @@
      (dotimes (i n)
      (setf (elt _data i) (sys::peek buf ptr- :float)) (incf ptr- 4)
      ))
-   ;; float32 _dist_x
-     (setq _dist_x (sys::peek buf ptr- :float)) (incf ptr- 4)
-   ;; float32 _dist_y
-     (setq _dist_y (sys::peek buf ptr- :float)) (incf ptr- 4)
-   ;; float32 _dist_z
-     (setq _dist_z (sys::peek buf ptr- :float)) (incf ptr- 4)
+   ;; float32 _t_x
+     (setq _t_x (sys::peek buf ptr- :float)) (incf ptr- 4)
+   ;; float32 _t_y
+     (setq _t_y (sys::peek buf ptr- :float)) (incf ptr- 4)
+   ;; float32 _t_z
+     (setq _t_z (sys::peek buf ptr- :float)) (incf ptr- 4)
    ;; int32 _dir_x
      (setq _dir_x (sys::peek buf ptr- :integer)) (incf ptr- 4)
    ;; int32 _dir_y
@@ -191,18 +191,18 @@
    self)
   )
 
-(setf (get chassis_ctrl::motion :md5sum-) "523376a3a3e7158b7be3bb165bd17ef2")
+(setf (get chassis_ctrl::motion :md5sum-) "e0f753ed444269f6cdb194965ccef5c6")
 (setf (get chassis_ctrl::motion :datatype-) "chassis_ctrl/motion")
 (setf (get chassis_ctrl::motion :definition-)
-      "# 坐标(x,y,z,theta_z)，4行1列
-float32[] data
+      "# (v_x,v_y,v_z,theta_z)，4行1列 速度值/z轴目标角度
+float32[] data  # mm / s
 int32 rows = 4
 int32 cols = 1
 
-# xyz动作执行量
-float32 dist_x # unit: mm
-float32 dist_y
-float32 dist_z
+# xyz 执行时间
+float32 t_x # unit: s
+float32 t_y
+float32 t_z
 
 # xyz动作执行方向
 int32 dir_x
@@ -222,6 +222,6 @@ bool action_f
 
 
 
-(provide :chassis_ctrl/motion "523376a3a3e7158b7be3bb165bd17ef2")
+(provide :chassis_ctrl/motion "e0f753ed444269f6cdb194965ccef5c6")
 
 

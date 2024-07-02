@@ -12,19 +12,19 @@
     :initarg :data
     :type (cl:vector cl:float)
    :initform (cl:make-array 0 :element-type 'cl:float :initial-element 0.0))
-   (dist_x
-    :reader dist_x
-    :initarg :dist_x
+   (t_x
+    :reader t_x
+    :initarg :t_x
     :type cl:float
     :initform 0.0)
-   (dist_y
-    :reader dist_y
-    :initarg :dist_y
+   (t_y
+    :reader t_y
+    :initarg :t_y
     :type cl:float
     :initform 0.0)
-   (dist_z
-    :reader dist_z
-    :initarg :dist_z
+   (t_z
+    :reader t_z
+    :initarg :t_z
     :type cl:float
     :initform 0.0)
    (dir_x
@@ -82,20 +82,20 @@
   (roslisp-msg-protocol:msg-deprecation-warning "Using old-style slot reader chassis_ctrl-msg:data-val is deprecated.  Use chassis_ctrl-msg:data instead.")
   (data m))
 
-(cl:ensure-generic-function 'dist_x-val :lambda-list '(m))
-(cl:defmethod dist_x-val ((m <motion>))
-  (roslisp-msg-protocol:msg-deprecation-warning "Using old-style slot reader chassis_ctrl-msg:dist_x-val is deprecated.  Use chassis_ctrl-msg:dist_x instead.")
-  (dist_x m))
+(cl:ensure-generic-function 't_x-val :lambda-list '(m))
+(cl:defmethod t_x-val ((m <motion>))
+  (roslisp-msg-protocol:msg-deprecation-warning "Using old-style slot reader chassis_ctrl-msg:t_x-val is deprecated.  Use chassis_ctrl-msg:t_x instead.")
+  (t_x m))
 
-(cl:ensure-generic-function 'dist_y-val :lambda-list '(m))
-(cl:defmethod dist_y-val ((m <motion>))
-  (roslisp-msg-protocol:msg-deprecation-warning "Using old-style slot reader chassis_ctrl-msg:dist_y-val is deprecated.  Use chassis_ctrl-msg:dist_y instead.")
-  (dist_y m))
+(cl:ensure-generic-function 't_y-val :lambda-list '(m))
+(cl:defmethod t_y-val ((m <motion>))
+  (roslisp-msg-protocol:msg-deprecation-warning "Using old-style slot reader chassis_ctrl-msg:t_y-val is deprecated.  Use chassis_ctrl-msg:t_y instead.")
+  (t_y m))
 
-(cl:ensure-generic-function 'dist_z-val :lambda-list '(m))
-(cl:defmethod dist_z-val ((m <motion>))
-  (roslisp-msg-protocol:msg-deprecation-warning "Using old-style slot reader chassis_ctrl-msg:dist_z-val is deprecated.  Use chassis_ctrl-msg:dist_z instead.")
-  (dist_z m))
+(cl:ensure-generic-function 't_z-val :lambda-list '(m))
+(cl:defmethod t_z-val ((m <motion>))
+  (roslisp-msg-protocol:msg-deprecation-warning "Using old-style slot reader chassis_ctrl-msg:t_z-val is deprecated.  Use chassis_ctrl-msg:t_z instead.")
+  (t_z m))
 
 (cl:ensure-generic-function 'dir_x-val :lambda-list '(m))
 (cl:defmethod dir_x-val ((m <motion>))
@@ -159,17 +159,17 @@
     (cl:write-byte (cl:ldb (cl:byte 8 16) bits) ostream)
     (cl:write-byte (cl:ldb (cl:byte 8 24) bits) ostream)))
    (cl:slot-value msg 'data))
-  (cl:let ((bits (roslisp-utils:encode-single-float-bits (cl:slot-value msg 'dist_x))))
+  (cl:let ((bits (roslisp-utils:encode-single-float-bits (cl:slot-value msg 't_x))))
     (cl:write-byte (cl:ldb (cl:byte 8 0) bits) ostream)
     (cl:write-byte (cl:ldb (cl:byte 8 8) bits) ostream)
     (cl:write-byte (cl:ldb (cl:byte 8 16) bits) ostream)
     (cl:write-byte (cl:ldb (cl:byte 8 24) bits) ostream))
-  (cl:let ((bits (roslisp-utils:encode-single-float-bits (cl:slot-value msg 'dist_y))))
+  (cl:let ((bits (roslisp-utils:encode-single-float-bits (cl:slot-value msg 't_y))))
     (cl:write-byte (cl:ldb (cl:byte 8 0) bits) ostream)
     (cl:write-byte (cl:ldb (cl:byte 8 8) bits) ostream)
     (cl:write-byte (cl:ldb (cl:byte 8 16) bits) ostream)
     (cl:write-byte (cl:ldb (cl:byte 8 24) bits) ostream))
-  (cl:let ((bits (roslisp-utils:encode-single-float-bits (cl:slot-value msg 'dist_z))))
+  (cl:let ((bits (roslisp-utils:encode-single-float-bits (cl:slot-value msg 't_z))))
     (cl:write-byte (cl:ldb (cl:byte 8 0) bits) ostream)
     (cl:write-byte (cl:ldb (cl:byte 8 8) bits) ostream)
     (cl:write-byte (cl:ldb (cl:byte 8 16) bits) ostream)
@@ -219,19 +219,19 @@
       (cl:setf (cl:ldb (cl:byte 8 8) bits) (cl:read-byte istream))
       (cl:setf (cl:ldb (cl:byte 8 16) bits) (cl:read-byte istream))
       (cl:setf (cl:ldb (cl:byte 8 24) bits) (cl:read-byte istream))
-    (cl:setf (cl:slot-value msg 'dist_x) (roslisp-utils:decode-single-float-bits bits)))
+    (cl:setf (cl:slot-value msg 't_x) (roslisp-utils:decode-single-float-bits bits)))
     (cl:let ((bits 0))
       (cl:setf (cl:ldb (cl:byte 8 0) bits) (cl:read-byte istream))
       (cl:setf (cl:ldb (cl:byte 8 8) bits) (cl:read-byte istream))
       (cl:setf (cl:ldb (cl:byte 8 16) bits) (cl:read-byte istream))
       (cl:setf (cl:ldb (cl:byte 8 24) bits) (cl:read-byte istream))
-    (cl:setf (cl:slot-value msg 'dist_y) (roslisp-utils:decode-single-float-bits bits)))
+    (cl:setf (cl:slot-value msg 't_y) (roslisp-utils:decode-single-float-bits bits)))
     (cl:let ((bits 0))
       (cl:setf (cl:ldb (cl:byte 8 0) bits) (cl:read-byte istream))
       (cl:setf (cl:ldb (cl:byte 8 8) bits) (cl:read-byte istream))
       (cl:setf (cl:ldb (cl:byte 8 16) bits) (cl:read-byte istream))
       (cl:setf (cl:ldb (cl:byte 8 24) bits) (cl:read-byte istream))
-    (cl:setf (cl:slot-value msg 'dist_z) (roslisp-utils:decode-single-float-bits bits)))
+    (cl:setf (cl:slot-value msg 't_z) (roslisp-utils:decode-single-float-bits bits)))
     (cl:let ((unsigned 0))
       (cl:setf (cl:ldb (cl:byte 8 0) unsigned) (cl:read-byte istream))
       (cl:setf (cl:ldb (cl:byte 8 8) unsigned) (cl:read-byte istream))
@@ -265,16 +265,16 @@
   "chassis_ctrl/motion")
 (cl:defmethod roslisp-msg-protocol:md5sum ((type (cl:eql '<motion>)))
   "Returns md5sum for a message object of type '<motion>"
-  "523376a3a3e7158b7be3bb165bd17ef2")
+  "e0f753ed444269f6cdb194965ccef5c6")
 (cl:defmethod roslisp-msg-protocol:md5sum ((type (cl:eql 'motion)))
   "Returns md5sum for a message object of type 'motion"
-  "523376a3a3e7158b7be3bb165bd17ef2")
+  "e0f753ed444269f6cdb194965ccef5c6")
 (cl:defmethod roslisp-msg-protocol:message-definition ((type (cl:eql '<motion>)))
   "Returns full string definition for message of type '<motion>"
-  (cl:format cl:nil "# 坐标(x,y,z,theta_z)，4行1列~%float32[] data~%int32 rows = 4~%int32 cols = 1~%~%# xyz动作执行量~%float32 dist_x # unit: mm~%float32 dist_y~%float32 dist_z~%~%# xyz动作执行方向~%int32 dir_x~%int32 dir_y~%int32 dir_z~%~%# 判断xyz,b_cybergear动作执行完成~%bool b_x~%bool b_y~%bool b_z~%bool b_cybergear~%~%# 判断钢筋绑扎完成~%bool action_f~%~%~%"))
+  (cl:format cl:nil "# (v_x,v_y,v_z,theta_z)，4行1列 速度值/z轴目标角度~%float32[] data  # mm / s~%int32 rows = 4~%int32 cols = 1~%~%# xyz 执行时间~%float32 t_x # unit: s~%float32 t_y~%float32 t_z~%~%# xyz动作执行方向~%int32 dir_x~%int32 dir_y~%int32 dir_z~%~%# 判断xyz,b_cybergear动作执行完成~%bool b_x~%bool b_y~%bool b_z~%bool b_cybergear~%~%# 判断钢筋绑扎完成~%bool action_f~%~%~%"))
 (cl:defmethod roslisp-msg-protocol:message-definition ((type (cl:eql 'motion)))
   "Returns full string definition for message of type 'motion"
-  (cl:format cl:nil "# 坐标(x,y,z,theta_z)，4行1列~%float32[] data~%int32 rows = 4~%int32 cols = 1~%~%# xyz动作执行量~%float32 dist_x # unit: mm~%float32 dist_y~%float32 dist_z~%~%# xyz动作执行方向~%int32 dir_x~%int32 dir_y~%int32 dir_z~%~%# 判断xyz,b_cybergear动作执行完成~%bool b_x~%bool b_y~%bool b_z~%bool b_cybergear~%~%# 判断钢筋绑扎完成~%bool action_f~%~%~%"))
+  (cl:format cl:nil "# (v_x,v_y,v_z,theta_z)，4行1列 速度值/z轴目标角度~%float32[] data  # mm / s~%int32 rows = 4~%int32 cols = 1~%~%# xyz 执行时间~%float32 t_x # unit: s~%float32 t_y~%float32 t_z~%~%# xyz动作执行方向~%int32 dir_x~%int32 dir_y~%int32 dir_z~%~%# 判断xyz,b_cybergear动作执行完成~%bool b_x~%bool b_y~%bool b_z~%bool b_cybergear~%~%# 判断钢筋绑扎完成~%bool action_f~%~%~%"))
 (cl:defmethod roslisp-msg-protocol:serialization-length ((msg <motion>))
   (cl:+ 0
      4 (cl:reduce #'cl:+ (cl:slot-value msg 'data) :key #'(cl:lambda (ele) (cl:declare (cl:ignorable ele)) (cl:+ 4)))
@@ -294,9 +294,9 @@
   "Converts a ROS message object to a list"
   (cl:list 'motion
     (cl:cons ':data (data msg))
-    (cl:cons ':dist_x (dist_x msg))
-    (cl:cons ':dist_y (dist_y msg))
-    (cl:cons ':dist_z (dist_z msg))
+    (cl:cons ':t_x (t_x msg))
+    (cl:cons ':t_y (t_y msg))
+    (cl:cons ':t_z (t_z msg))
     (cl:cons ':dir_x (dir_x msg))
     (cl:cons ':dir_y (dir_y msg))
     (cl:cons ':dir_z (dir_z msg))

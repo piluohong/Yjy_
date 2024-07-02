@@ -1,12 +1,12 @@
 (cl:in-package chassis_ctrl-msg)
 (cl:export '(DATA-VAL
           DATA
-          DIST_X-VAL
-          DIST_X
-          DIST_Y-VAL
-          DIST_Y
-          DIST_Z-VAL
-          DIST_Z
+          T_X-VAL
+          T_X
+          T_Y-VAL
+          T_Y
+          T_Z-VAL
+          T_Z
           DIR_X-VAL
           DIR_X
           DIR_Y-VAL

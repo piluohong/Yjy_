@@ -25,9 +25,9 @@ struct motion_
 
   motion_()
     : data()
-    , dist_x(0.0)
-    , dist_y(0.0)
-    , dist_z(0.0)
+    , t_x(0.0)
+    , t_y(0.0)
+    , t_z(0.0)
     , dir_x(0)
     , dir_y(0)
     , dir_z(0)
@@ -39,9 +39,9 @@ struct motion_
     }
   motion_(const ContainerAllocator& _alloc)
     : data(_alloc)
-    , dist_x(0.0)
-    , dist_y(0.0)
-    , dist_z(0.0)
+    , t_x(0.0)
+    , t_y(0.0)
+    , t_z(0.0)
     , dir_x(0)
     , dir_y(0)
     , dir_z(0)
@@ -58,14 +58,14 @@ struct motion_
    typedef std::vector<float, typename std::allocator_traits<ContainerAllocator>::template rebind_alloc<float>> _data_type;
   _data_type data;
 
-   typedef float _dist_x_type;
-  _dist_x_type dist_x;
+   typedef float _t_x_type;
+  _t_x_type t_x;
 
-   typedef float _dist_y_type;
-  _dist_y_type dist_y;
+   typedef float _t_y_type;
+  _t_y_type t_y;
 
-   typedef float _dist_z_type;
-  _dist_z_type dist_z;
+   typedef float _t_z_type;
+  _t_z_type t_z;
 
    typedef int32_t _dir_x_type;
   _dir_x_type dir_x;
@@ -137,9 +137,9 @@ template<typename ContainerAllocator1, typename ContainerAllocator2>
 bool operator==(const ::chassis_ctrl::motion_<ContainerAllocator1> & lhs, const ::chassis_ctrl::motion_<ContainerAllocator2> & rhs)
 {
   return lhs.data == rhs.data &&
-    lhs.dist_x == rhs.dist_x &&
-    lhs.dist_y == rhs.dist_y &&
-    lhs.dist_z == rhs.dist_z &&
+    lhs.t_x == rhs.t_x &&
+    lhs.t_y == rhs.t_y &&
+    lhs.t_z == rhs.t_z &&
     lhs.dir_x == rhs.dir_x &&
     lhs.dir_y == rhs.dir_y &&
     lhs.dir_z == rhs.dir_z &&
@@ -204,12 +204,12 @@ struct MD5Sum< ::chassis_ctrl::motion_<ContainerAllocator> >
 {
   static const char* value()
   {
-    return "523376a3a3e7158b7be3bb165bd17ef2";
+    return "e0f753ed444269f6cdb194965ccef5c6";
   }
 
   static const char* value(const ::chassis_ctrl::motion_<ContainerAllocator>&) { return value(); }
-  static const uint64_t static_value1 = 0x523376a3a3e7158bULL;
-  static const uint64_t static_value2 = 0x7be3bb165bd17ef2ULL;
+  static const uint64_t static_value1 = 0xe0f753ed444269f6ULL;
+  static const uint64_t static_value2 = 0xcdb194965ccef5c6ULL;
 };
 
 template<class ContainerAllocator>
@@ -228,15 +228,15 @@ struct Definition< ::chassis_ctrl::motion_<ContainerAllocator> >
 {
   static const char* value()
   {
-    return "# 坐标(x,y,z,theta_z)，4行1列\n"
-"float32[] data\n"
+    return "# (v_x,v_y,v_z,theta_z)，4行1列 速度值/z轴目标角度\n"
+"float32[] data  # mm / s\n"
 "int32 rows = 4\n"
 "int32 cols = 1\n"
 "\n"
-"# xyz动作执行量\n"
-"float32 dist_x # unit: mm\n"
-"float32 dist_y\n"
-"float32 dist_z\n"
+"# xyz 执行时间\n"
+"float32 t_x # unit: s\n"
+"float32 t_y\n"
+"float32 t_z\n"
 "\n"
 "# xyz动作执行方向\n"
 "int32 dir_x\n"
@@ -270,9 +270,9 @@ namespace serialization
     template<typename Stream, typename T> inline static void allInOne(Stream& stream, T m)
     {
       stream.next(m.data);
-      stream.next(m.dist_x);
-      stream.next(m.dist_y);
-      stream.next(m.dist_z);
+      stream.next(m.t_x);
+      stream.next(m.t_y);
+      stream.next(m.t_z);
       stream.next(m.dir_x);
       stream.next(m.dir_y);
       stream.next(m.dir_z);
@@ -305,12 +305,12 @@ struct Printer< ::chassis_ctrl::motion_<ContainerAllocator> >
       s << indent << "  data[" << i << "]: ";
       Printer<float>::stream(s, indent + "  ", v.data[i]);
     }
-    s << indent << "dist_x: ";
-    Printer<float>::stream(s, indent + "  ", v.dist_x);
-    s << indent << "dist_y: ";
-    Printer<float>::stream(s, indent + "  ", v.dist_y);
-    s << indent << "dist_z: ";
-    Printer<float>::stream(s, indent + "  ", v.dist_z);
+    s << indent << "t_x: ";
+    Printer<float>::stream(s, indent + "  ", v.t_x);
+    s << indent << "t_y: ";
+    Printer<float>::stream(s, indent + "  ", v.t_y);
+    s << indent << "t_z: ";
+    Printer<float>::stream(s, indent + "  ", v.t_z);
     s << indent << "dir_x: ";
     Printer<int32_t>::stream(s, indent + "  ", v.dir_x);
     s << indent << "dir_y: ";

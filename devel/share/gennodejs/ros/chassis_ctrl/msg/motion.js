@@ -19,9 +19,9 @@ class motion {
     if (initObj === null) {
       // initObj === null is a special case for deserialization where we don't initialize fields
       this.data = null;
-      this.dist_x = null;
-      this.dist_y = null;
-      this.dist_z = null;
+      this.t_x = null;
+      this.t_y = null;
+      this.t_z = null;
       this.dir_x = null;
       this.dir_y = null;
       this.dir_z = null;
@@ -38,23 +38,23 @@ class motion {
       else {
         this.data = [];
       }
-      if (initObj.hasOwnProperty('dist_x')) {
-        this.dist_x = initObj.dist_x
+      if (initObj.hasOwnProperty('t_x')) {
+        this.t_x = initObj.t_x
       }
       else {
-        this.dist_x = 0.0;
+        this.t_x = 0.0;
       }
-      if (initObj.hasOwnProperty('dist_y')) {
-        this.dist_y = initObj.dist_y
-      }
-      else {
-        this.dist_y = 0.0;
-      }
-      if (initObj.hasOwnProperty('dist_z')) {
-        this.dist_z = initObj.dist_z
+      if (initObj.hasOwnProperty('t_y')) {
+        this.t_y = initObj.t_y
       }
       else {
-        this.dist_z = 0.0;
+        this.t_y = 0.0;
+      }
+      if (initObj.hasOwnProperty('t_z')) {
+        this.t_z = initObj.t_z
+      }
+      else {
+        this.t_z = 0.0;
       }
       if (initObj.hasOwnProperty('dir_x')) {
         this.dir_x = initObj.dir_x
@@ -111,12 +111,12 @@ class motion {
     // Serializes a message object of type motion
     // Serialize message field [data]
     bufferOffset = _arraySerializer.float32(obj.data, buffer, bufferOffset, null);
-    // Serialize message field [dist_x]
-    bufferOffset = _serializer.float32(obj.dist_x, buffer, bufferOffset);
-    // Serialize message field [dist_y]
-    bufferOffset = _serializer.float32(obj.dist_y, buffer, bufferOffset);
-    // Serialize message field [dist_z]
-    bufferOffset = _serializer.float32(obj.dist_z, buffer, bufferOffset);
+    // Serialize message field [t_x]
+    bufferOffset = _serializer.float32(obj.t_x, buffer, bufferOffset);
+    // Serialize message field [t_y]
+    bufferOffset = _serializer.float32(obj.t_y, buffer, bufferOffset);
+    // Serialize message field [t_z]
+    bufferOffset = _serializer.float32(obj.t_z, buffer, bufferOffset);
     // Serialize message field [dir_x]
     bufferOffset = _serializer.int32(obj.dir_x, buffer, bufferOffset);
     // Serialize message field [dir_y]
@@ -142,12 +142,12 @@ class motion {
     let data = new motion(null);
     // Deserialize message field [data]
     data.data = _arrayDeserializer.float32(buffer, bufferOffset, null)
-    // Deserialize message field [dist_x]
-    data.dist_x = _deserializer.float32(buffer, bufferOffset);
-    // Deserialize message field [dist_y]
-    data.dist_y = _deserializer.float32(buffer, bufferOffset);
-    // Deserialize message field [dist_z]
-    data.dist_z = _deserializer.float32(buffer, bufferOffset);
+    // Deserialize message field [t_x]
+    data.t_x = _deserializer.float32(buffer, bufferOffset);
+    // Deserialize message field [t_y]
+    data.t_y = _deserializer.float32(buffer, bufferOffset);
+    // Deserialize message field [t_z]
+    data.t_z = _deserializer.float32(buffer, bufferOffset);
     // Deserialize message field [dir_x]
     data.dir_x = _deserializer.int32(buffer, bufferOffset);
     // Deserialize message field [dir_y]
@@ -180,21 +180,21 @@ class motion {
 
   static md5sum() {
     //Returns md5sum for a message object
-    return '523376a3a3e7158b7be3bb165bd17ef2';
+    return 'e0f753ed444269f6cdb194965ccef5c6';
   }
 
   static messageDefinition() {
     // Returns full string definition for message
     return `
-    # 坐标(x,y,z,theta_z)，4行1列
-    float32[] data
+    # (v_x,v_y,v_z,theta_z)，4行1列 速度值/z轴目标角度
+    float32[] data  # mm / s
     int32 rows = 4
     int32 cols = 1
     
-    # xyz动作执行量
-    float32 dist_x # unit: mm
-    float32 dist_y
-    float32 dist_z
+    # xyz 执行时间
+    float32 t_x # unit: s
+    float32 t_y
+    float32 t_z
     
     # xyz动作执行方向
     int32 dir_x
@@ -226,25 +226,25 @@ class motion {
       resolved.data = []
     }
 
-    if (msg.dist_x !== undefined) {
-      resolved.dist_x = msg.dist_x;
+    if (msg.t_x !== undefined) {
+      resolved.t_x = msg.t_x;
     }
     else {
-      resolved.dist_x = 0.0
+      resolved.t_x = 0.0
     }
 
-    if (msg.dist_y !== undefined) {
-      resolved.dist_y = msg.dist_y;
+    if (msg.t_y !== undefined) {
+      resolved.t_y = msg.t_y;
     }
     else {
-      resolved.dist_y = 0.0
+      resolved.t_y = 0.0
     }
 
-    if (msg.dist_z !== undefined) {
-      resolved.dist_z = msg.dist_z;
+    if (msg.t_z !== undefined) {
+      resolved.t_z = msg.t_z;
     }
     else {
-      resolved.dist_z = 0.0
+      resolved.t_z = 0.0
     }
 
     if (msg.dir_x !== undefined) {

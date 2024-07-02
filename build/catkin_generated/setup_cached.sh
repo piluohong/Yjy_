@@ -7,7 +7,7 @@
 # new environment variables
 
 # modified environment variables
-export CMAKE_PREFIX_PATH="/home/abc/Yjy_/devel:$CMAKE_PREFIX_PATH"
+export LD_LIBRARY_PATH='/opt/ros/noetic/lib'
+export PKG_CONFIG_PATH='/opt/ros/noetic/lib/pkgconfig'
 export PWD='/home/abc/Yjy_/build'
-export ROSLISP_PACKAGE_DIRECTORIES='/home/abc/Yjy_/devel/share/common-lisp'
-export ROS_PACKAGE_PATH="/home/abc/Yjy_/src:$ROS_PACKAGE_PATH"
+export PYTHONPATH='/opt/ros/noetic/lib/python3/dist-packages'

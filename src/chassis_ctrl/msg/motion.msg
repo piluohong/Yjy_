@@ -1,12 +1,12 @@
-# 坐标(x,y,z,theta_z)，4行1列
-float32[] data
+# (v_x,v_y,v_z,theta_z)，4行1列 速度值/z轴目标角度
+float32[] data  # mm / s
 int32 rows = 4
 int32 cols = 1
 
-# xyz动作执行量
-float32 dist_x # unit: mm
-float32 dist_y
-float32 dist_z
+# xyz 执行时间
+float32 t_x # unit: s
+float32 t_y
+float32 t_z
 
 # xyz动作执行方向
 int32 dir_x
