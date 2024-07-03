@@ -277,8 +277,7 @@ void xyz_nodeCallback(const chassis_ctrl::motion &input_msg) {
         printf("----> 不执行z\n");
         // module_displace_z(&dis3,msg3);
         // thread3.join();
-            
-        // }
+    
         // sleep(1.5);
             msg.p_index += 1;
             if (msg.p_index > 1)
