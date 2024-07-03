@@ -9,8 +9,8 @@ void debug_message_pub(const std_msgs::Float32 &debug_mes)
 {
     // debug: 收到yolo识别值 [x,y,z,theta]
     std::vector<std::vector<float>> cor(4, std::vector<float>(2, 0.0f));
-    cor[0][0] = 25.f; cor[1][0] = 25.f ; cor[2][0]= 50.f; cor[3][0] = 90.f;
-    cor[0][1] = 40.f; cor[1][1] = 40.f ; cor[2][1] = 40.f; cor[3][1] = 90.f;
+    cor[0][0] = 100.f; cor[1][0] = 100.f ; cor[2][0]= 50.f; cor[3][0] = 360.f;
+    cor[0][1] = 300.f; cor[1][1] = 150.f ; cor[2][1] = 40.f; cor[3][1] = 360.f;
 
 
      // Create a message

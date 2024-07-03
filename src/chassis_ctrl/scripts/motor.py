@@ -65,20 +65,20 @@ def get_theta(msg):
     global ser
     global cybergear_pub
     
-    set_angular = msg.data[3]
+    set_angular = msg.data[4*msg.p_index + 3]
     hex_angle = receive_angular(float(set_angular))
     
     
     # 进入位置模式 控制
     loc_ref_to_send = f"41 54 90 07 eb fc 08 16 70 00 00 {hex_angle} 0d 0a" # 相对于零位的位置
-    limit_spd_to_send = "41 54 90 07 eb fc 08 17 70 00 00 00 00 00 40 0d 0a" # 速度限制
-    # set_spd_to_send = "41 54 90 07 eb fc 08 0a 70 00 00 00 00 80 3f 0d 0a"
+    limit_spd_to_send = "41 54 90 07 eb fc 08 17 70 00 00 00 00 20 41 0d 0a" # 速度限制
+    # set_spd_to_send = "41 54 90 07 eb fc 08 18 20 00 00 00 00 80 3f 0d 0a"
     # 执行
     send_command(ser, limit_spd_to_send)
     send_command(ser, loc_ref_to_send)
     
     #mechPos
-    # receive_loc(ser)
+    receive_loc(ser)
     
     # 设置当前位置为机械零位
     set_zero_loc = "41 54 30 07 eb fc 08 01 00 00 00 00 00 00 00 0d 0a"
@@ -86,7 +86,7 @@ def get_theta(msg):
     # receive_response(ser)
     
     # 等待电机响应完成
-    time.sleep(1)
+    # time.sleep(1)
     
     # 设置电机完成信号
     # t = Float32()
@@ -106,8 +106,8 @@ if __name__ == "__main__":
     send_command(ser, run_to_send)
     receive_response(ser)
     
-    set_cur_kp = "41 54 90 07 eb fc 08 10 70 00 00 00 00 80 3f 0d 0a"
-    send_command(ser, set_cur_kp)
+    # set_cur_kp = "41 54 90 07 eb fc 08 10 70 00 00 00 00 80 3f 0d 0a"
+    # send_command(ser, set_cur_kp)
 
     rospy.init_node('motor', anonymous=True)
     rospy.loginfo(GREEN + "----> cybergear_node Started." + RESET)

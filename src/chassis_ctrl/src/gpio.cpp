@@ -90,10 +90,10 @@ static inline void gpio_toggle_bit(uint16_t addr, uint8_t bit) {
     gpio_bit_write(addr, bit, !value);
 }
 
-void generate_square_wave(int addr, uint8_t bit_move, uint8_t bit_dir, int frequency, double distance, int dir) {
+bool generate_square_wave(int addr, uint8_t bit_move, uint8_t bit_dir, int frequency, double distance, int dir) {
     if (distance < 0) {
         fprintf(stderr, "Invalid distance: %f\n", distance);
-        return;
+        return false;
     }
     gpio_bit_write(addr, bit_dir, dir);
     int duration = 500000 / frequency;
@@ -103,44 +103,53 @@ void generate_square_wave(int addr, uint8_t bit_move, uint8_t bit_dir, int frequ
         gpio_toggle_bit(addr, bit_move); // 再次切换GPIO端口的高低电平
         usleep(duration);                // 等待低电平持续时间
     }
+
+    return true;
 }
 
-void module_displace_x(module_displacement* dis, chassis_ctrl::motion &msg) {
+void module_displace_x(module_displacement* dis, chassis_ctrl::motion &msg, bool &b_x_axis, float &cost_x_real) {
     printf("----> 执行x\n");
     printf("执行时间tx： %f\n.",msg.t_x);
+
+    b_x_axis = false;
+    cost_x_real = 0.f; // s
     auto start = std::chrono::steady_clock::now();
     while (true) {
         
-        generate_square_wave(addr, GPIO_0, GPIO_1, FEQ, dis->x_move, dis->x_dir);
+        b_x_axis = generate_square_wave(addr, GPIO_0, GPIO_1, FEQ, dis->x_move, dis->x_dir);
         auto end = std::chrono::steady_clock::now();
         std::chrono::duration<double> elapsed = end - start;
         if (elapsed.count() <= msg.t_x)
         {
-                continue;
+            continue;
         }
         else
-        { 
-            printf("实际t_x: %f s.\n",elapsed.count());
+        {   
+            cost_x_real = elapsed.count();
+            printf("实际t_x: %f s.\n",cost_x_real);
             break;
         }
     }
     printf("finish x !\n");
 }
 
-void module_displace_y(module_displacement* dis, chassis_ctrl::motion &msg) {
+void module_displace_y(module_displacement* dis, chassis_ctrl::motion &msg, bool &b_y_axis, float &cost_y_real) {
     printf("----> 执行y \n");
     printf("执行时间ty： %f\n",msg.t_y);
+    b_y_axis = false;
+    cost_y_real = 0.f; // s
     auto start = std::chrono::steady_clock::now();
     while (true) {
         
-        generate_square_wave(addr, GPIO_2, GPIO_3, FEQ, dis->y_move, dis->y_dir);
+        b_y_axis = generate_square_wave(addr, GPIO_2, GPIO_3, FEQ, dis->y_move, dis->y_dir);
         auto end = std::chrono::steady_clock::now();
         std::chrono::duration<double> elapsed = end - start;
         if (elapsed.count() <= msg.t_y)
             continue;
         else
         { 
-            printf("实际t_y: %f s.\n",elapsed.count());
+            cost_y_real = elapsed.count();
+            printf("实际t_y: %f s.\n",cost_y_real);
             break;
         }
 
@@ -148,19 +157,22 @@ void module_displace_y(module_displacement* dis, chassis_ctrl::motion &msg) {
     printf("finish y !\n");
 }
 
-void module_displace_z(module_displacement* dis, chassis_ctrl::motion &msg) {
+void module_displace_z(module_displacement* dis, chassis_ctrl::motion &msg, bool &b_z_axis, float &cost_z_real) {
     printf("执行时间tz： %f\n.",msg.t_z);
+    b_z_axis = false;
+    cost_z_real = 0.f;
     auto start = std::chrono::steady_clock::now();
     while (true) {
         
-        generate_square_wave(addr, GPIO_4, GPIO_5, FEQ, dis->z_move, dis->z_dir);
+        b_z_axis = generate_square_wave(addr, GPIO_4, GPIO_5, FEQ, dis->z_move, dis->z_dir);
         auto end = std::chrono::steady_clock::now();
         std::chrono::duration<double> elapsed = end - start;
         if (elapsed.count() <= msg.t_z)
             continue;
         else
-        { 
-            printf("t_z: %f s.\n",elapsed.count());
+        {
+            cost_z_real = elapsed.count(); 
+            printf("实际t_z: %f s.\n",cost_z_real);
             break;
         }
     }
@@ -170,7 +182,7 @@ void module_displace_z(module_displacement* dis, chassis_ctrl::motion &msg) {
 chassis_ctrl::motion wt_dir( chassis_ctrl::motion &msg){
      int n = msg.p_index;
      if(msg.p_index == 0){ // 1
-        msg.dir_x = 0; msg.dir_y = 0; msg.dir_z = 1; //初始化为 1
+        msg.dir_x = 1; msg.dir_y = 1; msg.dir_z = 1; //初始化为 1
         msg.d_x = msg.data[0]; msg.d_y = msg.data[1]; msg.d_z = msg.data[2];    
         return msg;                                                                                   
     } else if (msg.p_index != 0 && msg.data[4*n] > msg.data[4*(n-1)] && msg.data[4*n+1] > msg.data[4*n-3] && msg.data[4*n+2] > msg.data[4*n-2]){ // 2
@@ -206,19 +218,21 @@ chassis_ctrl::motion wt_dir( chassis_ctrl::motion &msg){
         msg.d_x = std::abs(msg.data[4*n] - msg.data[4*(n-1)]); msg.d_y = std::abs(msg.data[4*n+1] - msg.data[4*n-3]); msg.d_z = std::abs(msg.data[4*n+2] - msg.data[4*n-2]); 
         return msg;  
     }
-   
+
+    return msg;
 }
 
 chassis_ctrl::motion wt_time( chassis_ctrl::motion &msg){
     int n = msg.p_index;
-     if(msg.p_index == 0){ // 1
+     if(msg.p_index == 0){ // 第一个点
         msg.t_x = float(msg.data[0]/msg.v_x); msg.t_y = float(msg.data[1]/msg.v_y); msg.t_z = float(msg.data[2]/msg.v_z);  
         return msg; 
      } else {
-        //根据相对位置
+        // 根据相对位置计算理论执行时间
         msg.t_x = float(std::abs(msg.data[4*n] - msg.data[4*n-4])/msg.v_x); msg.t_y = float(std::abs(msg.data[4*n+1] - msg.data[4*n-3])/msg.v_y); msg.t_z = float(std::abs(msg.data[4*n+2] - msg.data[4*n-2])/msg.v_z);
         return msg;
      }
+     return msg;
 }
 
 void xyz_nodeCallback(const chassis_ctrl::motion &input_msg) {
@@ -227,16 +241,16 @@ void xyz_nodeCallback(const chassis_ctrl::motion &input_msg) {
     module_displacement dis;
     while (1){
         // 根据点之间相对位置 继续设置三轴方向，初始为 1
-        // 现在执行第 n 个点，判断
+        // 现在执行第 n 个点，判断 坐标执行量和执行方向
         msg = wt_dir(msg);
-        // 设置执行时间
+        // 设置理论执行时间
         msg = wt_time(msg);
         printf("执行No. %d 个点： { %f,%f,%f },{ %d,%d,%d } \n.",msg.p_index,msg.t_x,msg.t_y,msg.t_z,msg.dir_x,msg.dir_y,msg.dir_z);
 
         dis.x_move = msg.d_x;// 
         dis.y_move = msg.d_y;//
         dis.z_move = msg.d_z;// 
-        dis.z_theta = msg.data[4*msg.p_index+3]; // theta_z
+        dis.z_theta = msg.data[4*msg.p_index + 3]; // theta_z
         dis.x_dir = msg.dir_x; // 1：+x；0：-x
         dis.y_dir = msg.dir_y; // 1：+y；0：-y
         dis.z_dir = msg.dir_z; // 1: +z; 0: -z
@@ -245,20 +259,19 @@ void xyz_nodeCallback(const chassis_ctrl::motion &input_msg) {
         auto msg2 = msg; auto dis2 = dis;
         auto msg3 = msg; auto dis3 = dis;
 
-
         printf("xyz dist: %f,%f,%f\n.",msg.d_x,msg.d_y,msg.d_z);
         printf("xyz dir: %d,%d,%d\n.",msg.dir_x,msg.dir_y,msg.dir_z);
         printf("xyz cost: %f,%f,%f\n.",msg.t_x,msg.t_y,msg.t_z);
        
 
-        std::thread thread1(module_displace_x, &dis1, std::ref(msg1));
-        std::thread thread2(module_displace_y, &dis2, std::ref(msg2));
+        // std::thread thread1(module_displace_x, &dis1, std::ref(msg1));
+        // std::thread thread2(module_displace_y, &dis2, std::ref(msg2));
         // std::thread thread3(module_displace_z, &dis3, std::ref(msg3));
 
         if (int(msg.b_cybergear) == 0) {
             
-            thread1.join();
-            thread2.join();
+            // thread1.join();
+            // thread2.join();
         }
         
         printf("----> 不执行z\n");
@@ -266,9 +279,9 @@ void xyz_nodeCallback(const chassis_ctrl::motion &input_msg) {
         // thread3.join();
             
         // }
-
+        // sleep(1.5);
             msg.p_index += 1;
-            if (msg.p_index > 0)
+            if (msg.p_index > 1)
                 break;
     }
 }

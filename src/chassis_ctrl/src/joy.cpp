@@ -59,8 +59,6 @@ TeleopTurtle::TeleopTurtle()
     // xyz_pub = nh.advertise<chassis_ctrl::motion>("/xyz_node/xyz_action", 1);
 
     
-    
-    
 }
 
 void TeleopTurtle::callback(const sensor_msgs::Joy::ConstPtr &joy)

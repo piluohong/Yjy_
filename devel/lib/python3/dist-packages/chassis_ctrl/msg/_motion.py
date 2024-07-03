@@ -17,7 +17,7 @@ float32[8] data  # mm
 # 当前点索引
 int32 p_index
 
-# 定位每个目标时，三个方向的速度值
+# 定位每个目标时，三个方向的速度值, 根据电机给定
 float32 v_x
 float32 v_y
 float32 v_z

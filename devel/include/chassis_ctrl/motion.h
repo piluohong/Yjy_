@@ -262,7 +262,7 @@ struct Definition< ::chassis_ctrl::motion_<ContainerAllocator> >
 "# 当前点索引\n"
 "int32 p_index\n"
 "\n"
-"# 定位每个目标时，三个方向的速度值\n"
+"# 定位每个目标时，三个方向的速度值, 根据电机给定\n"
 "float32 v_x\n"
 "float32 v_y\n"
 "float32 v_z\n"
