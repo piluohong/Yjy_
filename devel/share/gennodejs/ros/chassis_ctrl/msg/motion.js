@@ -19,6 +19,13 @@ class motion {
     if (initObj === null) {
       // initObj === null is a special case for deserialization where we don't initialize fields
       this.data = null;
+      this.p_index = null;
+      this.v_x = null;
+      this.v_y = null;
+      this.v_z = null;
+      this.d_x = null;
+      this.d_y = null;
+      this.d_z = null;
       this.t_x = null;
       this.t_y = null;
       this.t_z = null;
@@ -36,7 +43,49 @@ class motion {
         this.data = initObj.data
       }
       else {
-        this.data = [];
+        this.data = new Array(8).fill(0);
+      }
+      if (initObj.hasOwnProperty('p_index')) {
+        this.p_index = initObj.p_index
+      }
+      else {
+        this.p_index = 0;
+      }
+      if (initObj.hasOwnProperty('v_x')) {
+        this.v_x = initObj.v_x
+      }
+      else {
+        this.v_x = 0.0;
+      }
+      if (initObj.hasOwnProperty('v_y')) {
+        this.v_y = initObj.v_y
+      }
+      else {
+        this.v_y = 0.0;
+      }
+      if (initObj.hasOwnProperty('v_z')) {
+        this.v_z = initObj.v_z
+      }
+      else {
+        this.v_z = 0.0;
+      }
+      if (initObj.hasOwnProperty('d_x')) {
+        this.d_x = initObj.d_x
+      }
+      else {
+        this.d_x = 0.0;
+      }
+      if (initObj.hasOwnProperty('d_y')) {
+        this.d_y = initObj.d_y
+      }
+      else {
+        this.d_y = 0.0;
+      }
+      if (initObj.hasOwnProperty('d_z')) {
+        this.d_z = initObj.d_z
+      }
+      else {
+        this.d_z = 0.0;
       }
       if (initObj.hasOwnProperty('t_x')) {
         this.t_x = initObj.t_x
@@ -109,8 +158,26 @@ class motion {
 
   static serialize(obj, buffer, bufferOffset) {
     // Serializes a message object of type motion
+    // Check that the constant length array field [data] has the right length
+    if (obj.data.length !== 8) {
+      throw new Error('Unable to serialize array field data - length must be 8')
+    }
     // Serialize message field [data]
-    bufferOffset = _arraySerializer.float32(obj.data, buffer, bufferOffset, null);
+    bufferOffset = _arraySerializer.float32(obj.data, buffer, bufferOffset, 8);
+    // Serialize message field [p_index]
+    bufferOffset = _serializer.int32(obj.p_index, buffer, bufferOffset);
+    // Serialize message field [v_x]
+    bufferOffset = _serializer.float32(obj.v_x, buffer, bufferOffset);
+    // Serialize message field [v_y]
+    bufferOffset = _serializer.float32(obj.v_y, buffer, bufferOffset);
+    // Serialize message field [v_z]
+    bufferOffset = _serializer.float32(obj.v_z, buffer, bufferOffset);
+    // Serialize message field [d_x]
+    bufferOffset = _serializer.float32(obj.d_x, buffer, bufferOffset);
+    // Serialize message field [d_y]
+    bufferOffset = _serializer.float32(obj.d_y, buffer, bufferOffset);
+    // Serialize message field [d_z]
+    bufferOffset = _serializer.float32(obj.d_z, buffer, bufferOffset);
     // Serialize message field [t_x]
     bufferOffset = _serializer.float32(obj.t_x, buffer, bufferOffset);
     // Serialize message field [t_y]
@@ -141,7 +208,21 @@ class motion {
     let len;
     let data = new motion(null);
     // Deserialize message field [data]
-    data.data = _arrayDeserializer.float32(buffer, bufferOffset, null)
+    data.data = _arrayDeserializer.float32(buffer, bufferOffset, 8)
+    // Deserialize message field [p_index]
+    data.p_index = _deserializer.int32(buffer, bufferOffset);
+    // Deserialize message field [v_x]
+    data.v_x = _deserializer.float32(buffer, bufferOffset);
+    // Deserialize message field [v_y]
+    data.v_y = _deserializer.float32(buffer, bufferOffset);
+    // Deserialize message field [v_z]
+    data.v_z = _deserializer.float32(buffer, bufferOffset);
+    // Deserialize message field [d_x]
+    data.d_x = _deserializer.float32(buffer, bufferOffset);
+    // Deserialize message field [d_y]
+    data.d_y = _deserializer.float32(buffer, bufferOffset);
+    // Deserialize message field [d_z]
+    data.d_z = _deserializer.float32(buffer, bufferOffset);
     // Deserialize message field [t_x]
     data.t_x = _deserializer.float32(buffer, bufferOffset);
     // Deserialize message field [t_y]
@@ -168,9 +249,7 @@ class motion {
   }
 
   static getMessageSize(object) {
-    let length = 0;
-    length += 4 * object.data.length;
-    return length + 33;
+    return 89;
   }
 
   static datatype() {
@@ -180,18 +259,29 @@ class motion {
 
   static md5sum() {
     //Returns md5sum for a message object
-    return 'e0f753ed444269f6cdb194965ccef5c6';
+    return '09cf865b2244b478628aef6da36bc73b';
   }
 
   static messageDefinition() {
     // Returns full string definition for message
     return `
-    # (v_x,v_y,v_z,theta_z)，4行1列 速度值/z轴目标角度
-    float32[] data  # mm / s
-    int32 rows = 4
-    int32 cols = 1
+    # (x,y,z,theta_z;....;....;)， 坐标值/z轴目标角度 （测试使用两个点）
+    float32[8] data  # mm
     
-    # xyz 执行时间
+    # 当前点索引
+    int32 p_index
+    
+    # 定位每个目标时，三个方向的速度值
+    float32 v_x
+    float32 v_y
+    float32 v_z
+    
+    # xyz执行量
+    float32 d_x
+    float32 d_y
+    float32 d_z
+    
+    # xyz 执行时间, 用于响应截止
     float32 t_x # unit: s
     float32 t_y
     float32 t_z
@@ -223,7 +313,56 @@ class motion {
       resolved.data = msg.data;
     }
     else {
-      resolved.data = []
+      resolved.data = new Array(8).fill(0)
+    }
+
+    if (msg.p_index !== undefined) {
+      resolved.p_index = msg.p_index;
+    }
+    else {
+      resolved.p_index = 0
+    }
+
+    if (msg.v_x !== undefined) {
+      resolved.v_x = msg.v_x;
+    }
+    else {
+      resolved.v_x = 0.0
+    }
+
+    if (msg.v_y !== undefined) {
+      resolved.v_y = msg.v_y;
+    }
+    else {
+      resolved.v_y = 0.0
+    }
+
+    if (msg.v_z !== undefined) {
+      resolved.v_z = msg.v_z;
+    }
+    else {
+      resolved.v_z = 0.0
+    }
+
+    if (msg.d_x !== undefined) {
+      resolved.d_x = msg.d_x;
+    }
+    else {
+      resolved.d_x = 0.0
+    }
+
+    if (msg.d_y !== undefined) {
+      resolved.d_y = msg.d_y;
+    }
+    else {
+      resolved.d_y = 0.0
+    }
+
+    if (msg.d_z !== undefined) {
+      resolved.d_z = msg.d_z;
+    }
+    else {
+      resolved.d_z = 0.0
     }
 
     if (msg.t_x !== undefined) {
@@ -306,11 +445,5 @@ class motion {
     return resolved;
     }
 };
-
-// Constants for message
-motion.Constants = {
-  ROWS: 4,
-  COLS: 1,
-}
 
 module.exports = motion;

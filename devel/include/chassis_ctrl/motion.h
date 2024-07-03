@@ -25,6 +25,13 @@ struct motion_
 
   motion_()
     : data()
+    , p_index(0)
+    , v_x(0.0)
+    , v_y(0.0)
+    , v_z(0.0)
+    , d_x(0.0)
+    , d_y(0.0)
+    , d_z(0.0)
     , t_x(0.0)
     , t_y(0.0)
     , t_z(0.0)
@@ -36,9 +43,17 @@ struct motion_
     , b_z(false)
     , b_cybergear(false)
     , action_f(false)  {
-    }
+      data.assign(0.0);
+  }
   motion_(const ContainerAllocator& _alloc)
-    : data(_alloc)
+    : data()
+    , p_index(0)
+    , v_x(0.0)
+    , v_y(0.0)
+    , v_z(0.0)
+    , d_x(0.0)
+    , d_y(0.0)
+    , d_z(0.0)
     , t_x(0.0)
     , t_y(0.0)
     , t_z(0.0)
@@ -51,12 +66,34 @@ struct motion_
     , b_cybergear(false)
     , action_f(false)  {
   (void)_alloc;
-    }
+      data.assign(0.0);
+  }
 
 
 
-   typedef std::vector<float, typename std::allocator_traits<ContainerAllocator>::template rebind_alloc<float>> _data_type;
+   typedef boost::array<float, 8>  _data_type;
   _data_type data;
+
+   typedef int32_t _p_index_type;
+  _p_index_type p_index;
+
+   typedef float _v_x_type;
+  _v_x_type v_x;
+
+   typedef float _v_y_type;
+  _v_y_type v_y;
+
+   typedef float _v_z_type;
+  _v_z_type v_z;
+
+   typedef float _d_x_type;
+  _d_x_type d_x;
+
+   typedef float _d_y_type;
+  _d_y_type d_y;
+
+   typedef float _d_z_type;
+  _d_z_type d_z;
 
    typedef float _t_x_type;
   _t_x_type t_x;
@@ -93,18 +130,6 @@ struct motion_
 
 
 
-// reducing the odds to have name collisions with Windows.h 
-#if defined(_WIN32) && defined(rows)
-  #undef rows
-#endif
-#if defined(_WIN32) && defined(cols)
-  #undef cols
-#endif
-
-  enum {
-    rows = 4,
-    cols = 1,
-  };
 
 
   typedef boost::shared_ptr< ::chassis_ctrl::motion_<ContainerAllocator> > Ptr;
@@ -118,10 +143,6 @@ typedef boost::shared_ptr< ::chassis_ctrl::motion > motionPtr;
 typedef boost::shared_ptr< ::chassis_ctrl::motion const> motionConstPtr;
 
 // constants requiring out of line definition
-
-   
-
-   
 
 
 
@@ -137,6 +158,13 @@ template<typename ContainerAllocator1, typename ContainerAllocator2>
 bool operator==(const ::chassis_ctrl::motion_<ContainerAllocator1> & lhs, const ::chassis_ctrl::motion_<ContainerAllocator2> & rhs)
 {
   return lhs.data == rhs.data &&
+    lhs.p_index == rhs.p_index &&
+    lhs.v_x == rhs.v_x &&
+    lhs.v_y == rhs.v_y &&
+    lhs.v_z == rhs.v_z &&
+    lhs.d_x == rhs.d_x &&
+    lhs.d_y == rhs.d_y &&
+    lhs.d_z == rhs.d_z &&
     lhs.t_x == rhs.t_x &&
     lhs.t_y == rhs.t_y &&
     lhs.t_z == rhs.t_z &&
@@ -180,12 +208,12 @@ struct IsMessage< ::chassis_ctrl::motion_<ContainerAllocator> const>
 
 template <class ContainerAllocator>
 struct IsFixedSize< ::chassis_ctrl::motion_<ContainerAllocator> >
-  : FalseType
+  : TrueType
   { };
 
 template <class ContainerAllocator>
 struct IsFixedSize< ::chassis_ctrl::motion_<ContainerAllocator> const>
-  : FalseType
+  : TrueType
   { };
 
 template <class ContainerAllocator>
@@ -204,12 +232,12 @@ struct MD5Sum< ::chassis_ctrl::motion_<ContainerAllocator> >
 {
   static const char* value()
   {
-    return "e0f753ed444269f6cdb194965ccef5c6";
+    return "09cf865b2244b478628aef6da36bc73b";
   }
 
   static const char* value(const ::chassis_ctrl::motion_<ContainerAllocator>&) { return value(); }
-  static const uint64_t static_value1 = 0xe0f753ed444269f6ULL;
-  static const uint64_t static_value2 = 0xcdb194965ccef5c6ULL;
+  static const uint64_t static_value1 = 0x09cf865b2244b478ULL;
+  static const uint64_t static_value2 = 0x628aef6da36bc73bULL;
 };
 
 template<class ContainerAllocator>
@@ -228,12 +256,23 @@ struct Definition< ::chassis_ctrl::motion_<ContainerAllocator> >
 {
   static const char* value()
   {
-    return "# (v_x,v_y,v_z,theta_z)，4行1列 速度值/z轴目标角度\n"
-"float32[] data  # mm / s\n"
-"int32 rows = 4\n"
-"int32 cols = 1\n"
+    return "# (x,y,z,theta_z;....;....;)， 坐标值/z轴目标角度 （测试使用两个点）\n"
+"float32[8] data  # mm\n"
 "\n"
-"# xyz 执行时间\n"
+"# 当前点索引\n"
+"int32 p_index\n"
+"\n"
+"# 定位每个目标时，三个方向的速度值\n"
+"float32 v_x\n"
+"float32 v_y\n"
+"float32 v_z\n"
+"\n"
+"# xyz执行量\n"
+"float32 d_x\n"
+"float32 d_y\n"
+"float32 d_z\n"
+"\n"
+"# xyz 执行时间, 用于响应截止\n"
 "float32 t_x # unit: s\n"
 "float32 t_y\n"
 "float32 t_z\n"
@@ -270,6 +309,13 @@ namespace serialization
     template<typename Stream, typename T> inline static void allInOne(Stream& stream, T m)
     {
       stream.next(m.data);
+      stream.next(m.p_index);
+      stream.next(m.v_x);
+      stream.next(m.v_y);
+      stream.next(m.v_z);
+      stream.next(m.d_x);
+      stream.next(m.d_y);
+      stream.next(m.d_z);
       stream.next(m.t_x);
       stream.next(m.t_y);
       stream.next(m.t_z);
@@ -305,6 +351,20 @@ struct Printer< ::chassis_ctrl::motion_<ContainerAllocator> >
       s << indent << "  data[" << i << "]: ";
       Printer<float>::stream(s, indent + "  ", v.data[i]);
     }
+    s << indent << "p_index: ";
+    Printer<int32_t>::stream(s, indent + "  ", v.p_index);
+    s << indent << "v_x: ";
+    Printer<float>::stream(s, indent + "  ", v.v_x);
+    s << indent << "v_y: ";
+    Printer<float>::stream(s, indent + "  ", v.v_y);
+    s << indent << "v_z: ";
+    Printer<float>::stream(s, indent + "  ", v.v_z);
+    s << indent << "d_x: ";
+    Printer<float>::stream(s, indent + "  ", v.d_x);
+    s << indent << "d_y: ";
+    Printer<float>::stream(s, indent + "  ", v.d_y);
+    s << indent << "d_z: ";
+    Printer<float>::stream(s, indent + "  ", v.d_z);
     s << indent << "t_x: ";
     Printer<float>::stream(s, indent + "  ", v.t_x);
     s << indent << "t_y: ";

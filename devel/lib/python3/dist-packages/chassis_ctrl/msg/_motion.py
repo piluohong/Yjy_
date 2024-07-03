@@ -8,15 +8,26 @@ import struct
 
 
 class motion(genpy.Message):
-  _md5sum = "e0f753ed444269f6cdb194965ccef5c6"
+  _md5sum = "09cf865b2244b478628aef6da36bc73b"
   _type = "chassis_ctrl/motion"
   _has_header = False  # flag to mark the presence of a Header object
-  _full_text = """# (v_x,v_y,v_z,theta_z)，4行1列 速度值/z轴目标角度
-float32[] data  # mm / s
-int32 rows = 4
-int32 cols = 1
+  _full_text = """# (x,y,z,theta_z;....;....;)， 坐标值/z轴目标角度 （测试使用两个点）
+float32[8] data  # mm
 
-# xyz 执行时间
+# 当前点索引
+int32 p_index
+
+# 定位每个目标时，三个方向的速度值
+float32 v_x
+float32 v_y
+float32 v_z
+
+# xyz执行量
+float32 d_x
+float32 d_y
+float32 d_z
+
+# xyz 执行时间, 用于响应截止
 float32 t_x # unit: s
 float32 t_y
 float32 t_z
@@ -35,12 +46,8 @@ bool b_cybergear
 # 判断钢筋绑扎完成
 bool action_f
 """
-  # Pseudo-constants
-  rows = 4
-  cols = 1
-
-  __slots__ = ['data','t_x','t_y','t_z','dir_x','dir_y','dir_z','b_x','b_y','b_z','b_cybergear','action_f']
-  _slot_types = ['float32[]','float32','float32','float32','int32','int32','int32','bool','bool','bool','bool','bool']
+  __slots__ = ['data','p_index','v_x','v_y','v_z','d_x','d_y','d_z','t_x','t_y','t_z','dir_x','dir_y','dir_z','b_x','b_y','b_z','b_cybergear','action_f']
+  _slot_types = ['float32[8]','int32','float32','float32','float32','float32','float32','float32','float32','float32','float32','int32','int32','int32','bool','bool','bool','bool','bool']
 
   def __init__(self, *args, **kwds):
     """
@@ -50,7 +57,7 @@ bool action_f
     changes.  You cannot mix in-order arguments and keyword arguments.
 
     The available fields are:
-       data,t_x,t_y,t_z,dir_x,dir_y,dir_z,b_x,b_y,b_z,b_cybergear,action_f
+       data,p_index,v_x,v_y,v_z,d_x,d_y,d_z,t_x,t_y,t_z,dir_x,dir_y,dir_z,b_x,b_y,b_z,b_cybergear,action_f
 
     :param args: complete set of field values, in .msg order
     :param kwds: use keyword arguments corresponding to message field names
@@ -60,7 +67,21 @@ bool action_f
       super(motion, self).__init__(*args, **kwds)
       # message fields cannot be None, assign default values for those that are
       if self.data is None:
-        self.data = []
+        self.data = [0.] * 8
+      if self.p_index is None:
+        self.p_index = 0
+      if self.v_x is None:
+        self.v_x = 0.
+      if self.v_y is None:
+        self.v_y = 0.
+      if self.v_z is None:
+        self.v_z = 0.
+      if self.d_x is None:
+        self.d_x = 0.
+      if self.d_y is None:
+        self.d_y = 0.
+      if self.d_z is None:
+        self.d_z = 0.
       if self.t_x is None:
         self.t_x = 0.
       if self.t_y is None:
@@ -84,7 +105,14 @@ bool action_f
       if self.action_f is None:
         self.action_f = False
     else:
-      self.data = []
+      self.data = [0.] * 8
+      self.p_index = 0
+      self.v_x = 0.
+      self.v_y = 0.
+      self.v_z = 0.
+      self.d_x = 0.
+      self.d_y = 0.
+      self.d_z = 0.
       self.t_x = 0.
       self.t_y = 0.
       self.t_z = 0.
@@ -109,12 +137,9 @@ bool action_f
     :param buff: buffer, ``StringIO``
     """
     try:
-      length = len(self.data)
-      buff.write(_struct_I.pack(length))
-      pattern = '<%sf'%length
-      buff.write(struct.Struct(pattern).pack(*self.data))
+      buff.write(_get_struct_8f().pack(*self.data))
       _x = self
-      buff.write(_get_struct_3f3i5B().pack(_x.t_x, _x.t_y, _x.t_z, _x.dir_x, _x.dir_y, _x.dir_z, _x.b_x, _x.b_y, _x.b_z, _x.b_cybergear, _x.action_f))
+      buff.write(_get_struct_i9f3i5B().pack(_x.p_index, _x.v_x, _x.v_y, _x.v_z, _x.d_x, _x.d_y, _x.d_z, _x.t_x, _x.t_y, _x.t_z, _x.dir_x, _x.dir_y, _x.dir_z, _x.b_x, _x.b_y, _x.b_z, _x.b_cybergear, _x.action_f))
     except struct.error as se: self._check_types(struct.error("%s: '%s' when writing '%s'" % (type(se), str(se), str(locals().get('_x', self)))))
     except TypeError as te: self._check_types(ValueError("%s: '%s' when writing '%s'" % (type(te), str(te), str(locals().get('_x', self)))))
 
@@ -128,17 +153,12 @@ bool action_f
     try:
       end = 0
       start = end
-      end += 4
-      (length,) = _struct_I.unpack(str[start:end])
-      pattern = '<%sf'%length
-      start = end
-      s = struct.Struct(pattern)
-      end += s.size
-      self.data = s.unpack(str[start:end])
+      end += 32
+      self.data = _get_struct_8f().unpack(str[start:end])
       _x = self
       start = end
-      end += 29
-      (_x.t_x, _x.t_y, _x.t_z, _x.dir_x, _x.dir_y, _x.dir_z, _x.b_x, _x.b_y, _x.b_z, _x.b_cybergear, _x.action_f,) = _get_struct_3f3i5B().unpack(str[start:end])
+      end += 57
+      (_x.p_index, _x.v_x, _x.v_y, _x.v_z, _x.d_x, _x.d_y, _x.d_z, _x.t_x, _x.t_y, _x.t_z, _x.dir_x, _x.dir_y, _x.dir_z, _x.b_x, _x.b_y, _x.b_z, _x.b_cybergear, _x.action_f,) = _get_struct_i9f3i5B().unpack(str[start:end])
       self.b_x = bool(self.b_x)
       self.b_y = bool(self.b_y)
       self.b_z = bool(self.b_z)
@@ -156,12 +176,9 @@ bool action_f
     :param numpy: numpy python module
     """
     try:
-      length = len(self.data)
-      buff.write(_struct_I.pack(length))
-      pattern = '<%sf'%length
       buff.write(self.data.tostring())
       _x = self
-      buff.write(_get_struct_3f3i5B().pack(_x.t_x, _x.t_y, _x.t_z, _x.dir_x, _x.dir_y, _x.dir_z, _x.b_x, _x.b_y, _x.b_z, _x.b_cybergear, _x.action_f))
+      buff.write(_get_struct_i9f3i5B().pack(_x.p_index, _x.v_x, _x.v_y, _x.v_z, _x.d_x, _x.d_y, _x.d_z, _x.t_x, _x.t_y, _x.t_z, _x.dir_x, _x.dir_y, _x.dir_z, _x.b_x, _x.b_y, _x.b_z, _x.b_cybergear, _x.action_f))
     except struct.error as se: self._check_types(struct.error("%s: '%s' when writing '%s'" % (type(se), str(se), str(locals().get('_x', self)))))
     except TypeError as te: self._check_types(ValueError("%s: '%s' when writing '%s'" % (type(te), str(te), str(locals().get('_x', self)))))
 
@@ -176,17 +193,12 @@ bool action_f
     try:
       end = 0
       start = end
-      end += 4
-      (length,) = _struct_I.unpack(str[start:end])
-      pattern = '<%sf'%length
-      start = end
-      s = struct.Struct(pattern)
-      end += s.size
-      self.data = numpy.frombuffer(str[start:end], dtype=numpy.float32, count=length)
+      end += 32
+      self.data = numpy.frombuffer(str[start:end], dtype=numpy.float32, count=8)
       _x = self
       start = end
-      end += 29
-      (_x.t_x, _x.t_y, _x.t_z, _x.dir_x, _x.dir_y, _x.dir_z, _x.b_x, _x.b_y, _x.b_z, _x.b_cybergear, _x.action_f,) = _get_struct_3f3i5B().unpack(str[start:end])
+      end += 57
+      (_x.p_index, _x.v_x, _x.v_y, _x.v_z, _x.d_x, _x.d_y, _x.d_z, _x.t_x, _x.t_y, _x.t_z, _x.dir_x, _x.dir_y, _x.dir_z, _x.b_x, _x.b_y, _x.b_z, _x.b_cybergear, _x.action_f,) = _get_struct_i9f3i5B().unpack(str[start:end])
       self.b_x = bool(self.b_x)
       self.b_y = bool(self.b_y)
       self.b_z = bool(self.b_z)
@@ -200,9 +212,15 @@ _struct_I = genpy.struct_I
 def _get_struct_I():
     global _struct_I
     return _struct_I
-_struct_3f3i5B = None
-def _get_struct_3f3i5B():
-    global _struct_3f3i5B
-    if _struct_3f3i5B is None:
-        _struct_3f3i5B = struct.Struct("<3f3i5B")
-    return _struct_3f3i5B
+_struct_8f = None
+def _get_struct_8f():
+    global _struct_8f
+    if _struct_8f is None:
+        _struct_8f = struct.Struct("<8f")
+    return _struct_8f
+_struct_i9f3i5B = None
+def _get_struct_i9f3i5B():
+    global _struct_i9f3i5B
+    if _struct_i9f3i5B is None:
+        _struct_i9f3i5B = struct.Struct("<i9f3i5B")
+    return _struct_i9f3i5B

@@ -1,6 +1,20 @@
 (cl:in-package chassis_ctrl-msg)
 (cl:export '(DATA-VAL
           DATA
+          P_INDEX-VAL
+          P_INDEX
+          V_X-VAL
+          V_X
+          V_Y-VAL
+          V_Y
+          V_Z-VAL
+          V_Z
+          D_X-VAL
+          D_X
+          D_Y-VAL
+          D_Y
+          D_Z-VAL
+          D_Z
           T_X-VAL
           T_X
           T_Y-VAL

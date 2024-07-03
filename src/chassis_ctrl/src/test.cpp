@@ -8,31 +8,37 @@ ros::Publisher pub;
 void debug_message_pub(const std_msgs::Float32 &debug_mes)
 {
     // debug: 收到yolo识别值 [x,y,z,theta]
-    std::vector<float> cor {0,0,0,0};
-    cor[0] = 100; cor[1] = 100 ; cor[2] = 40; cor[3] = 90;
+    std::vector<std::vector<float>> cor(4, std::vector<float>(2, 0.0f));
+    cor[0][0] = 25.f; cor[1][0] = 25.f ; cor[2][0]= 50.f; cor[3][0] = 90.f;
+    cor[0][1] = 40.f; cor[1][1] = 40.f ; cor[2][1] = 40.f; cor[3][1] = 90.f;
+
 
      // Create a message
     chassis_ctrl::motion msg;
+
     if(int(debug_mes.data) == 0)
         msg.b_cybergear = false;
     if(int(debug_mes.data) == 1)
         msg.b_cybergear = true;
-    // Initialize the data array
-    int rows = 4; // Update with your actual row size
-    int cols = 1; // Update with your actual column size
-    msg.data.resize(rows * cols);
 
-    // Fill the data array
-    msg.data[0] = 40;  msg.data[1] = 40; msg.data[2] = 40;
-    msg.data[3] = cor[3];
+    // 设置线性模组固定速度
+    msg.v_x = 250; msg.v_y = 250; msg.v_z = 250;
 
-    msg.t_x = float(cor[0] / msg.data[0]) ; msg.t_y = float(cor[1] / msg.data[1]); msg.t_z = float(cor[2]/msg.data[2]); // s 
-    msg.dir_x = 0;msg.dir_y = 1;msg.dir_z = 1;
-
+    // 存坐标数组
+    for (int col = 0; col < 2; ++col) {
+        for (int row = 0; row < 4; ++row) {
+            msg.data[col * 4 + row] = cor[row][col];
+        }
+    }
+    // 初始化点索引
+    msg.p_index = 0;
     
+    for (auto &a : msg.data)
+    {
+        printf("%f\n",a);
+    }
 
-    ROS_INFO("Input t data:%f,%f,%f,%f: ",msg.t_x,msg.t_y,msg.t_z, msg.data[3]);
-    // Publish the message
+    // Publish the chassis::motion message； gpio节点接收处理
     pub.publish(msg);
     // sleep(1);
 }

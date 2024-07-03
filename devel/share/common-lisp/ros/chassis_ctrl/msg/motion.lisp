@@ -11,7 +11,42 @@
     :reader data
     :initarg :data
     :type (cl:vector cl:float)
-   :initform (cl:make-array 0 :element-type 'cl:float :initial-element 0.0))
+   :initform (cl:make-array 8 :element-type 'cl:float :initial-element 0.0))
+   (p_index
+    :reader p_index
+    :initarg :p_index
+    :type cl:integer
+    :initform 0)
+   (v_x
+    :reader v_x
+    :initarg :v_x
+    :type cl:float
+    :initform 0.0)
+   (v_y
+    :reader v_y
+    :initarg :v_y
+    :type cl:float
+    :initform 0.0)
+   (v_z
+    :reader v_z
+    :initarg :v_z
+    :type cl:float
+    :initform 0.0)
+   (d_x
+    :reader d_x
+    :initarg :d_x
+    :type cl:float
+    :initform 0.0)
+   (d_y
+    :reader d_y
+    :initarg :d_y
+    :type cl:float
+    :initform 0.0)
+   (d_z
+    :reader d_z
+    :initarg :d_z
+    :type cl:float
+    :initform 0.0)
    (t_x
     :reader t_x
     :initarg :t_x
@@ -82,6 +117,41 @@
   (roslisp-msg-protocol:msg-deprecation-warning "Using old-style slot reader chassis_ctrl-msg:data-val is deprecated.  Use chassis_ctrl-msg:data instead.")
   (data m))
 
+(cl:ensure-generic-function 'p_index-val :lambda-list '(m))
+(cl:defmethod p_index-val ((m <motion>))
+  (roslisp-msg-protocol:msg-deprecation-warning "Using old-style slot reader chassis_ctrl-msg:p_index-val is deprecated.  Use chassis_ctrl-msg:p_index instead.")
+  (p_index m))
+
+(cl:ensure-generic-function 'v_x-val :lambda-list '(m))
+(cl:defmethod v_x-val ((m <motion>))
+  (roslisp-msg-protocol:msg-deprecation-warning "Using old-style slot reader chassis_ctrl-msg:v_x-val is deprecated.  Use chassis_ctrl-msg:v_x instead.")
+  (v_x m))
+
+(cl:ensure-generic-function 'v_y-val :lambda-list '(m))
+(cl:defmethod v_y-val ((m <motion>))
+  (roslisp-msg-protocol:msg-deprecation-warning "Using old-style slot reader chassis_ctrl-msg:v_y-val is deprecated.  Use chassis_ctrl-msg:v_y instead.")
+  (v_y m))
+
+(cl:ensure-generic-function 'v_z-val :lambda-list '(m))
+(cl:defmethod v_z-val ((m <motion>))
+  (roslisp-msg-protocol:msg-deprecation-warning "Using old-style slot reader chassis_ctrl-msg:v_z-val is deprecated.  Use chassis_ctrl-msg:v_z instead.")
+  (v_z m))
+
+(cl:ensure-generic-function 'd_x-val :lambda-list '(m))
+(cl:defmethod d_x-val ((m <motion>))
+  (roslisp-msg-protocol:msg-deprecation-warning "Using old-style slot reader chassis_ctrl-msg:d_x-val is deprecated.  Use chassis_ctrl-msg:d_x instead.")
+  (d_x m))
+
+(cl:ensure-generic-function 'd_y-val :lambda-list '(m))
+(cl:defmethod d_y-val ((m <motion>))
+  (roslisp-msg-protocol:msg-deprecation-warning "Using old-style slot reader chassis_ctrl-msg:d_y-val is deprecated.  Use chassis_ctrl-msg:d_y instead.")
+  (d_y m))
+
+(cl:ensure-generic-function 'd_z-val :lambda-list '(m))
+(cl:defmethod d_z-val ((m <motion>))
+  (roslisp-msg-protocol:msg-deprecation-warning "Using old-style slot reader chassis_ctrl-msg:d_z-val is deprecated.  Use chassis_ctrl-msg:d_z instead.")
+  (d_z m))
+
 (cl:ensure-generic-function 't_x-val :lambda-list '(m))
 (cl:defmethod t_x-val ((m <motion>))
   (roslisp-msg-protocol:msg-deprecation-warning "Using old-style slot reader chassis_ctrl-msg:t_x-val is deprecated.  Use chassis_ctrl-msg:t_x instead.")
@@ -136,29 +206,50 @@
 (cl:defmethod action_f-val ((m <motion>))
   (roslisp-msg-protocol:msg-deprecation-warning "Using old-style slot reader chassis_ctrl-msg:action_f-val is deprecated.  Use chassis_ctrl-msg:action_f instead.")
   (action_f m))
-(cl:defmethod roslisp-msg-protocol:symbol-codes ((msg-type (cl:eql '<motion>)))
-    "Constants for message type '<motion>"
-  '((:ROWS . 4)
-    (:COLS . 1))
-)
-(cl:defmethod roslisp-msg-protocol:symbol-codes ((msg-type (cl:eql 'motion)))
-    "Constants for message type 'motion"
-  '((:ROWS . 4)
-    (:COLS . 1))
-)
 (cl:defmethod roslisp-msg-protocol:serialize ((msg <motion>) ostream)
   "Serializes a message object of type '<motion>"
-  (cl:let ((__ros_arr_len (cl:length (cl:slot-value msg 'data))))
-    (cl:write-byte (cl:ldb (cl:byte 8 0) __ros_arr_len) ostream)
-    (cl:write-byte (cl:ldb (cl:byte 8 8) __ros_arr_len) ostream)
-    (cl:write-byte (cl:ldb (cl:byte 8 16) __ros_arr_len) ostream)
-    (cl:write-byte (cl:ldb (cl:byte 8 24) __ros_arr_len) ostream))
   (cl:map cl:nil #'(cl:lambda (ele) (cl:let ((bits (roslisp-utils:encode-single-float-bits ele)))
     (cl:write-byte (cl:ldb (cl:byte 8 0) bits) ostream)
     (cl:write-byte (cl:ldb (cl:byte 8 8) bits) ostream)
     (cl:write-byte (cl:ldb (cl:byte 8 16) bits) ostream)
     (cl:write-byte (cl:ldb (cl:byte 8 24) bits) ostream)))
    (cl:slot-value msg 'data))
+  (cl:let* ((signed (cl:slot-value msg 'p_index)) (unsigned (cl:if (cl:< signed 0) (cl:+ signed 4294967296) signed)))
+    (cl:write-byte (cl:ldb (cl:byte 8 0) unsigned) ostream)
+    (cl:write-byte (cl:ldb (cl:byte 8 8) unsigned) ostream)
+    (cl:write-byte (cl:ldb (cl:byte 8 16) unsigned) ostream)
+    (cl:write-byte (cl:ldb (cl:byte 8 24) unsigned) ostream)
+    )
+  (cl:let ((bits (roslisp-utils:encode-single-float-bits (cl:slot-value msg 'v_x))))
+    (cl:write-byte (cl:ldb (cl:byte 8 0) bits) ostream)
+    (cl:write-byte (cl:ldb (cl:byte 8 8) bits) ostream)
+    (cl:write-byte (cl:ldb (cl:byte 8 16) bits) ostream)
+    (cl:write-byte (cl:ldb (cl:byte 8 24) bits) ostream))
+  (cl:let ((bits (roslisp-utils:encode-single-float-bits (cl:slot-value msg 'v_y))))
+    (cl:write-byte (cl:ldb (cl:byte 8 0) bits) ostream)
+    (cl:write-byte (cl:ldb (cl:byte 8 8) bits) ostream)
+    (cl:write-byte (cl:ldb (cl:byte 8 16) bits) ostream)
+    (cl:write-byte (cl:ldb (cl:byte 8 24) bits) ostream))
+  (cl:let ((bits (roslisp-utils:encode-single-float-bits (cl:slot-value msg 'v_z))))
+    (cl:write-byte (cl:ldb (cl:byte 8 0) bits) ostream)
+    (cl:write-byte (cl:ldb (cl:byte 8 8) bits) ostream)
+    (cl:write-byte (cl:ldb (cl:byte 8 16) bits) ostream)
+    (cl:write-byte (cl:ldb (cl:byte 8 24) bits) ostream))
+  (cl:let ((bits (roslisp-utils:encode-single-float-bits (cl:slot-value msg 'd_x))))
+    (cl:write-byte (cl:ldb (cl:byte 8 0) bits) ostream)
+    (cl:write-byte (cl:ldb (cl:byte 8 8) bits) ostream)
+    (cl:write-byte (cl:ldb (cl:byte 8 16) bits) ostream)
+    (cl:write-byte (cl:ldb (cl:byte 8 24) bits) ostream))
+  (cl:let ((bits (roslisp-utils:encode-single-float-bits (cl:slot-value msg 'd_y))))
+    (cl:write-byte (cl:ldb (cl:byte 8 0) bits) ostream)
+    (cl:write-byte (cl:ldb (cl:byte 8 8) bits) ostream)
+    (cl:write-byte (cl:ldb (cl:byte 8 16) bits) ostream)
+    (cl:write-byte (cl:ldb (cl:byte 8 24) bits) ostream))
+  (cl:let ((bits (roslisp-utils:encode-single-float-bits (cl:slot-value msg 'd_z))))
+    (cl:write-byte (cl:ldb (cl:byte 8 0) bits) ostream)
+    (cl:write-byte (cl:ldb (cl:byte 8 8) bits) ostream)
+    (cl:write-byte (cl:ldb (cl:byte 8 16) bits) ostream)
+    (cl:write-byte (cl:ldb (cl:byte 8 24) bits) ostream))
   (cl:let ((bits (roslisp-utils:encode-single-float-bits (cl:slot-value msg 't_x))))
     (cl:write-byte (cl:ldb (cl:byte 8 0) bits) ostream)
     (cl:write-byte (cl:ldb (cl:byte 8 8) bits) ostream)
@@ -200,20 +291,57 @@
 )
 (cl:defmethod roslisp-msg-protocol:deserialize ((msg <motion>) istream)
   "Deserializes a message object of type '<motion>"
-  (cl:let ((__ros_arr_len 0))
-    (cl:setf (cl:ldb (cl:byte 8 0) __ros_arr_len) (cl:read-byte istream))
-    (cl:setf (cl:ldb (cl:byte 8 8) __ros_arr_len) (cl:read-byte istream))
-    (cl:setf (cl:ldb (cl:byte 8 16) __ros_arr_len) (cl:read-byte istream))
-    (cl:setf (cl:ldb (cl:byte 8 24) __ros_arr_len) (cl:read-byte istream))
-  (cl:setf (cl:slot-value msg 'data) (cl:make-array __ros_arr_len))
+  (cl:setf (cl:slot-value msg 'data) (cl:make-array 8))
   (cl:let ((vals (cl:slot-value msg 'data)))
-    (cl:dotimes (i __ros_arr_len)
+    (cl:dotimes (i 8)
     (cl:let ((bits 0))
       (cl:setf (cl:ldb (cl:byte 8 0) bits) (cl:read-byte istream))
       (cl:setf (cl:ldb (cl:byte 8 8) bits) (cl:read-byte istream))
       (cl:setf (cl:ldb (cl:byte 8 16) bits) (cl:read-byte istream))
       (cl:setf (cl:ldb (cl:byte 8 24) bits) (cl:read-byte istream))
-    (cl:setf (cl:aref vals i) (roslisp-utils:decode-single-float-bits bits))))))
+    (cl:setf (cl:aref vals i) (roslisp-utils:decode-single-float-bits bits)))))
+    (cl:let ((unsigned 0))
+      (cl:setf (cl:ldb (cl:byte 8 0) unsigned) (cl:read-byte istream))
+      (cl:setf (cl:ldb (cl:byte 8 8) unsigned) (cl:read-byte istream))
+      (cl:setf (cl:ldb (cl:byte 8 16) unsigned) (cl:read-byte istream))
+      (cl:setf (cl:ldb (cl:byte 8 24) unsigned) (cl:read-byte istream))
+      (cl:setf (cl:slot-value msg 'p_index) (cl:if (cl:< unsigned 2147483648) unsigned (cl:- unsigned 4294967296))))
+    (cl:let ((bits 0))
+      (cl:setf (cl:ldb (cl:byte 8 0) bits) (cl:read-byte istream))
+      (cl:setf (cl:ldb (cl:byte 8 8) bits) (cl:read-byte istream))
+      (cl:setf (cl:ldb (cl:byte 8 16) bits) (cl:read-byte istream))
+      (cl:setf (cl:ldb (cl:byte 8 24) bits) (cl:read-byte istream))
+    (cl:setf (cl:slot-value msg 'v_x) (roslisp-utils:decode-single-float-bits bits)))
+    (cl:let ((bits 0))
+      (cl:setf (cl:ldb (cl:byte 8 0) bits) (cl:read-byte istream))
+      (cl:setf (cl:ldb (cl:byte 8 8) bits) (cl:read-byte istream))
+      (cl:setf (cl:ldb (cl:byte 8 16) bits) (cl:read-byte istream))
+      (cl:setf (cl:ldb (cl:byte 8 24) bits) (cl:read-byte istream))
+    (cl:setf (cl:slot-value msg 'v_y) (roslisp-utils:decode-single-float-bits bits)))
+    (cl:let ((bits 0))
+      (cl:setf (cl:ldb (cl:byte 8 0) bits) (cl:read-byte istream))
+      (cl:setf (cl:ldb (cl:byte 8 8) bits) (cl:read-byte istream))
+      (cl:setf (cl:ldb (cl:byte 8 16) bits) (cl:read-byte istream))
+      (cl:setf (cl:ldb (cl:byte 8 24) bits) (cl:read-byte istream))
+    (cl:setf (cl:slot-value msg 'v_z) (roslisp-utils:decode-single-float-bits bits)))
+    (cl:let ((bits 0))
+      (cl:setf (cl:ldb (cl:byte 8 0) bits) (cl:read-byte istream))
+      (cl:setf (cl:ldb (cl:byte 8 8) bits) (cl:read-byte istream))
+      (cl:setf (cl:ldb (cl:byte 8 16) bits) (cl:read-byte istream))
+      (cl:setf (cl:ldb (cl:byte 8 24) bits) (cl:read-byte istream))
+    (cl:setf (cl:slot-value msg 'd_x) (roslisp-utils:decode-single-float-bits bits)))
+    (cl:let ((bits 0))
+      (cl:setf (cl:ldb (cl:byte 8 0) bits) (cl:read-byte istream))
+      (cl:setf (cl:ldb (cl:byte 8 8) bits) (cl:read-byte istream))
+      (cl:setf (cl:ldb (cl:byte 8 16) bits) (cl:read-byte istream))
+      (cl:setf (cl:ldb (cl:byte 8 24) bits) (cl:read-byte istream))
+    (cl:setf (cl:slot-value msg 'd_y) (roslisp-utils:decode-single-float-bits bits)))
+    (cl:let ((bits 0))
+      (cl:setf (cl:ldb (cl:byte 8 0) bits) (cl:read-byte istream))
+      (cl:setf (cl:ldb (cl:byte 8 8) bits) (cl:read-byte istream))
+      (cl:setf (cl:ldb (cl:byte 8 16) bits) (cl:read-byte istream))
+      (cl:setf (cl:ldb (cl:byte 8 24) bits) (cl:read-byte istream))
+    (cl:setf (cl:slot-value msg 'd_z) (roslisp-utils:decode-single-float-bits bits)))
     (cl:let ((bits 0))
       (cl:setf (cl:ldb (cl:byte 8 0) bits) (cl:read-byte istream))
       (cl:setf (cl:ldb (cl:byte 8 8) bits) (cl:read-byte istream))
@@ -265,19 +393,26 @@
   "chassis_ctrl/motion")
 (cl:defmethod roslisp-msg-protocol:md5sum ((type (cl:eql '<motion>)))
   "Returns md5sum for a message object of type '<motion>"
-  "e0f753ed444269f6cdb194965ccef5c6")
+  "09cf865b2244b478628aef6da36bc73b")
 (cl:defmethod roslisp-msg-protocol:md5sum ((type (cl:eql 'motion)))
   "Returns md5sum for a message object of type 'motion"
-  "e0f753ed444269f6cdb194965ccef5c6")
+  "09cf865b2244b478628aef6da36bc73b")
 (cl:defmethod roslisp-msg-protocol:message-definition ((type (cl:eql '<motion>)))
   "Returns full string definition for message of type '<motion>"
-  (cl:format cl:nil "# (v_x,v_y,v_z,theta_z)，4行1列 速度值/z轴目标角度~%float32[] data  # mm / s~%int32 rows = 4~%int32 cols = 1~%~%# xyz 执行时间~%float32 t_x # unit: s~%float32 t_y~%float32 t_z~%~%# xyz动作执行方向~%int32 dir_x~%int32 dir_y~%int32 dir_z~%~%# 判断xyz,b_cybergear动作执行完成~%bool b_x~%bool b_y~%bool b_z~%bool b_cybergear~%~%# 判断钢筋绑扎完成~%bool action_f~%~%~%"))
+  (cl:format cl:nil "# (x,y,z,theta_z;....;....;)， 坐标值/z轴目标角度 （测试使用两个点）~%float32[8] data  # mm~%~%# 当前点索引~%int32 p_index~%~%# 定位每个目标时，三个方向的速度值~%float32 v_x~%float32 v_y~%float32 v_z~%~%# xyz执行量~%float32 d_x~%float32 d_y~%float32 d_z~%~%# xyz 执行时间, 用于响应截止~%float32 t_x # unit: s~%float32 t_y~%float32 t_z~%~%# xyz动作执行方向~%int32 dir_x~%int32 dir_y~%int32 dir_z~%~%# 判断xyz,b_cybergear动作执行完成~%bool b_x~%bool b_y~%bool b_z~%bool b_cybergear~%~%# 判断钢筋绑扎完成~%bool action_f~%~%~%"))
 (cl:defmethod roslisp-msg-protocol:message-definition ((type (cl:eql 'motion)))
   "Returns full string definition for message of type 'motion"
-  (cl:format cl:nil "# (v_x,v_y,v_z,theta_z)，4行1列 速度值/z轴目标角度~%float32[] data  # mm / s~%int32 rows = 4~%int32 cols = 1~%~%# xyz 执行时间~%float32 t_x # unit: s~%float32 t_y~%float32 t_z~%~%# xyz动作执行方向~%int32 dir_x~%int32 dir_y~%int32 dir_z~%~%# 判断xyz,b_cybergear动作执行完成~%bool b_x~%bool b_y~%bool b_z~%bool b_cybergear~%~%# 判断钢筋绑扎完成~%bool action_f~%~%~%"))
+  (cl:format cl:nil "# (x,y,z,theta_z;....;....;)， 坐标值/z轴目标角度 （测试使用两个点）~%float32[8] data  # mm~%~%# 当前点索引~%int32 p_index~%~%# 定位每个目标时，三个方向的速度值~%float32 v_x~%float32 v_y~%float32 v_z~%~%# xyz执行量~%float32 d_x~%float32 d_y~%float32 d_z~%~%# xyz 执行时间, 用于响应截止~%float32 t_x # unit: s~%float32 t_y~%float32 t_z~%~%# xyz动作执行方向~%int32 dir_x~%int32 dir_y~%int32 dir_z~%~%# 判断xyz,b_cybergear动作执行完成~%bool b_x~%bool b_y~%bool b_z~%bool b_cybergear~%~%# 判断钢筋绑扎完成~%bool action_f~%~%~%"))
 (cl:defmethod roslisp-msg-protocol:serialization-length ((msg <motion>))
   (cl:+ 0
-     4 (cl:reduce #'cl:+ (cl:slot-value msg 'data) :key #'(cl:lambda (ele) (cl:declare (cl:ignorable ele)) (cl:+ 4)))
+     0 (cl:reduce #'cl:+ (cl:slot-value msg 'data) :key #'(cl:lambda (ele) (cl:declare (cl:ignorable ele)) (cl:+ 4)))
+     4
+     4
+     4
+     4
+     4
+     4
+     4
      4
      4
      4
@@ -294,6 +429,13 @@
   "Converts a ROS message object to a list"
   (cl:list 'motion
     (cl:cons ':data (data msg))
+    (cl:cons ':p_index (p_index msg))
+    (cl:cons ':v_x (v_x msg))
+    (cl:cons ':v_y (v_y msg))
+    (cl:cons ':v_z (v_z msg))
+    (cl:cons ':d_x (d_x msg))
+    (cl:cons ':d_y (d_y msg))
+    (cl:cons ':d_z (d_z msg))
     (cl:cons ':t_x (t_x msg))
     (cl:cons ':t_y (t_y msg))
     (cl:cons ':t_z (t_z msg))

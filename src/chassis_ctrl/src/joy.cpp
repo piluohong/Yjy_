@@ -81,21 +81,7 @@ void TeleopTurtle::callback(const sensor_msgs::Joy::ConstPtr &joy)
     cnt+=1;
 
     //  Create a message
-    chassis_ctrl::motion msg;
-
-    // Initialize the data array
-    int rows = 4; // Update with your actual row size
-    int cols = 1; // Update with your actual column size
-    msg.data.resize(rows * cols);
-
-    // Fill the data array
-    // msg.data[0] = msg.data[1] = msg.data[2] = 0;
-    // msg.data[3] = 90;
-    // msg.dir_x = msg.dir_y = msg.dir_z = 1;
-
-    // printf("%f,%f,%f: ",msg.data[0],msg.data[1],msg.data[2]);
-    // Publish the message
-    // xyz_pub.publish(msg);
+    // chassis_ctrl::motion msg;
     
 }
 
