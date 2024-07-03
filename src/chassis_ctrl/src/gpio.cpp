@@ -264,7 +264,7 @@ void xyz_nodeCallback(const chassis_ctrl::motion &input_msg) {
         printf("xyz cost: %f,%f,%f\n.",msg.t_x,msg.t_y,msg.t_z);
        
 
-        // std::thread thread1(module_displace_x, &dis1, std::ref(msg1));
+        // std::thread thread1(module_displace_x, &dis1, std::ref(msg1)); // 依照定义传参，将msg中判断三轴执行完毕的boo值传入，取出实际运行时间量
         // std::thread thread2(module_displace_y, &dis2, std::ref(msg2));
         // std::thread thread3(module_displace_z, &dis3, std::ref(msg3));
 
